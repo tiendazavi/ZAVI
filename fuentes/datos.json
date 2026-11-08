@@ -1,0 +1,226 @@
+{
+ "version": 1,
+ "config": {
+  "whatsapp": "51965604689",
+  "yapeNumero": "965604689",
+  "telefono": "+51 954 335 410",
+  "correo": "tiendaszavi@gmail.com",
+  "horario": "Lun – Sáb: 9:00 a 20:00 · Dom: 10:00 a 15:00",
+  "promos": [
+   "Envío a domicilio S/ 5 · Paga fácil con Yape",
+   "Nueva temporada importada · Ofertas en prendas seleccionadas",
+   "Compra por mayor con precios especiales · Consúltanos"
+  ],
+  "ofertasHasta": "",
+  "qr": "",
+  "sitioUrl": "",
+  "formEndpoint": "",
+  "reclamosUrl": "",
+  "envioCosto": 5,
+  "recojoTienda": true,
+  "condicionesCambio": ""
+ },
+ "productos": [
+  {
+   "id": 1,
+   "nombre": "Vestido midi elegante",
+   "cat": "mujer",
+   "tipo": "vestidos",
+   "precio": 129.9,
+   "antes": 169.9,
+   "nuevo": false,
+   "agotado": false,
+   "visible": true,
+   "img": "https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?auto=format&fit=crop&w=600&q=80",
+   "tallas": [
+    "S",
+    "M",
+    "L",
+    "XL"
+   ]
+  },
+  {
+   "id": 2,
+   "nombre": "Polo básico algodón premium",
+   "cat": "mujer",
+   "tipo": "polos",
+   "precio": 49.9,
+   "antes": null,
+   "nuevo": true,
+   "agotado": false,
+   "visible": true,
+   "img": "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=600&q=80",
+   "tallas": [
+    "S",
+    "M",
+    "L",
+    "XL"
+   ]
+  },
+  {
+   "id": 3,
+   "nombre": "Jean slim tiro alto",
+   "cat": "mujer",
+   "tipo": "pantalones",
+   "precio": 99.9,
+   "antes": 129.9,
+   "nuevo": false,
+   "agotado": false,
+   "visible": true,
+   "img": "https://images.unsplash.com/photo-1542272604-787c3835535d?auto=format&fit=crop&w=600&q=80",
+   "tallas": [
+    "26",
+    "28",
+    "30",
+    "32"
+   ]
+  },
+  {
+   "id": 4,
+   "nombre": "Casaca urbana importada",
+   "cat": "mujer",
+   "tipo": "casacas",
+   "precio": 189.9,
+   "antes": 249.9,
+   "nuevo": false,
+   "agotado": false,
+   "visible": true,
+   "img": "https://images.unsplash.com/photo-1591047139829-d91aecb6caea?auto=format&fit=crop&w=600&q=80",
+   "tallas": [
+    "S",
+    "M",
+    "L",
+    "XL"
+   ]
+  },
+  {
+   "id": 5,
+   "nombre": "Camisa clásica manga larga",
+   "cat": "hombre",
+   "tipo": "polos",
+   "precio": 89.9,
+   "antes": null,
+   "nuevo": true,
+   "agotado": false,
+   "visible": true,
+   "img": "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?auto=format&fit=crop&w=600&q=80",
+   "tallas": [
+    "S",
+    "M",
+    "L",
+    "XL"
+   ]
+  },
+  {
+   "id": 6,
+   "nombre": "Jean regular azul oscuro",
+   "cat": "hombre",
+   "tipo": "pantalones",
+   "precio": 109.9,
+   "antes": 139.9,
+   "nuevo": false,
+   "agotado": false,
+   "visible": true,
+   "img": "https://images.unsplash.com/photo-1542272604-787c3835535d?auto=format&fit=crop&w=600&q=80",
+   "tallas": [
+    "30",
+    "32",
+    "34",
+    "36"
+   ]
+  },
+  {
+   "id": 7,
+   "nombre": "Casaca de cuero sintético",
+   "cat": "hombre",
+   "tipo": "casacas",
+   "precio": 219.9,
+   "antes": 299.9,
+   "nuevo": false,
+   "agotado": false,
+   "visible": true,
+   "img": "https://images.unsplash.com/photo-1551028719-00167b16eac5?auto=format&fit=crop&w=600&q=80",
+   "tallas": [
+    "S",
+    "M",
+    "L",
+    "XL"
+   ]
+  },
+  {
+   "id": 8,
+   "nombre": "Polo oversize estampado",
+   "cat": "hombre",
+   "tipo": "polos",
+   "precio": 59.9,
+   "antes": null,
+   "nuevo": false,
+   "agotado": false,
+   "visible": true,
+   "img": "https://images.unsplash.com/photo-1556905055-8f358a7a47b2?auto=format&fit=crop&w=600&q=80",
+   "tallas": [
+    "S",
+    "M",
+    "L",
+    "XL"
+   ]
+  },
+  {
+   "id": 9,
+   "nombre": "Cartera de mano elegante",
+   "cat": "accesorios",
+   "tipo": "bolsos",
+   "precio": 119.9,
+   "antes": 159.9,
+   "nuevo": false,
+   "agotado": false,
+   "visible": true,
+   "img": "https://images.unsplash.com/photo-1584917865442-de89df76afd3?auto=format&fit=crop&w=600&q=80",
+   "tallas": []
+  },
+  {
+   "id": 10,
+   "nombre": "Mochila urbana resistente",
+   "cat": "accesorios",
+   "tipo": "bolsos",
+   "precio": 99.9,
+   "antes": null,
+   "nuevo": true,
+   "agotado": false,
+   "visible": true,
+   "img": "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&fit=crop&w=600&q=80",
+   "tallas": []
+  },
+  {
+   "id": 11,
+   "nombre": "Reloj clásico correa negra",
+   "cat": "accesorios",
+   "tipo": "relojes",
+   "precio": 149.9,
+   "antes": 199.9,
+   "nuevo": false,
+   "agotado": false,
+   "visible": true,
+   "img": "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=600&q=80",
+   "tallas": []
+  },
+  {
+   "id": 12,
+   "nombre": "Blusa casual de verano",
+   "cat": "mujer",
+   "tipo": "polos",
+   "precio": 69.9,
+   "antes": 89.9,
+   "nuevo": false,
+   "agotado": false,
+   "visible": true,
+   "img": "https://images.unsplash.com/photo-1434389677669-e08b4cac3105?auto=format&fit=crop&w=600&q=80",
+   "tallas": [
+    "S",
+    "M",
+    "L",
+    "XL"
+   ]
+  }
+ ]
+}
