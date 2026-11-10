@@ -686,133 +686,126 @@
     @media (prefers-reduced-motion: reduce) {
       .slide-fondo, .reveal, .producto, .tarjeta { transition: none !important; }
     }
-  
+
     /* =========================================================
-       ZAVI 2.0 · Pulido visual, accesibilidad y experiencia móvil
+       CATÁLOGO independiente: filtros laterales, barra, vista rápida
        ========================================================= */
-    :root {
-      --zavi-ink: #111114;
-      --zavi-paper: #fbfaf8;
-      --zavi-gold: #b08d57;
-      --zavi-line: rgba(17,17,20,.10);
-      --zavi-ease: cubic-bezier(.2,.75,.25,1);
+    .catalogo { background: #f7f5f1; }
+    .cat-cab { display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; flex-wrap: wrap; margin-bottom: 40px; padding-bottom: 28px; border-bottom: 1px solid var(--gris-borde); }
+    .cat-buscar { display: flex; align-items: center; gap: 10px; background: var(--blanco); border: 1px solid var(--gris-borde); border-radius: 4px; padding: 0 16px; width: min(380px, 100%); transition: var(--transicion); }
+    .cat-buscar:focus-within { border-color: var(--negro); box-shadow: 0 0 0 3px rgba(11,11,15,0.08); }
+    .cat-buscar svg { width: 18px; height: 18px; flex: none; color: var(--gris-texto); }
+    .cat-buscar input { flex: 1; min-width: 0; border: 0; outline: 0; background: transparent; padding: 14px 0; font: inherit; font-size: 0.95rem; }
+    .cat-layout { display: grid; grid-template-columns: 270px minmax(0, 1fr); gap: 40px; align-items: start; }
+    .cat-lateral { position: sticky; top: calc(var(--alto-cabecera) + 16px); background: var(--blanco); border: 1px solid var(--gris-borde); border-radius: 8px; padding: 22px; display: grid; gap: 22px; max-height: calc(100vh - var(--alto-cabecera) - 32px); overflow-y: auto; }
+    .cat-lateral-cab { display: none; }
+    .fgrupo h4 { font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--dorado); margin-bottom: 12px; font-weight: 700; }
+    .chips.lista-v { flex-direction: column; gap: 2px; }
+    .lista-v .chip { text-align: left; border: 0; border-radius: 4px; background: transparent; padding: 9px 12px; font-weight: 500; font-size: 0.93rem; }
+    .lista-v .chip:hover { background: var(--gris-claro); }
+    .lista-v .chip.activo { background: var(--negro); color: var(--blanco); }
+    .rango { display: flex; align-items: center; gap: 8px; }
+    .rango input { width: 100%; min-width: 0; padding: 10px 12px; border: 1px solid var(--gris-borde); border-radius: 4px; font: inherit; font-size: 0.9rem; }
+    .rango input:focus { outline: 0; border-color: var(--negro); }
+    .tallas-filtro { display: flex; flex-wrap: wrap; gap: 6px; }
+    .talla-f { min-width: 42px; height: 38px; padding: 0 10px; border: 1px solid var(--gris-borde); border-radius: 4px; background: var(--blanco); font-weight: 600; font-size: 0.85rem; transition: var(--transicion); }
+    .talla-f:hover { border-color: var(--negro); }
+    .talla-f.activa { background: var(--negro); color: var(--blanco); border-color: var(--negro); }
+    .fcheck { display: flex; align-items: center; gap: 10px; font-size: 0.92rem; padding: 6px 0; cursor: pointer; }
+    .fcheck input { width: 17px; height: 17px; accent-color: var(--negro); }
+    .cat-aplicar { display: none; }
+    .cat-barra { display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap; margin-bottom: 14px; }
+    .cat-barra .resultados-info { margin: 0; flex: 1; font-weight: 500; }
+    .cat-btn-filtros { display: none; padding: 11px 20px; }
+    .filtros-activos { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+    .filtros-activos:empty { display: none; }
+    .filtro-activo { display: inline-flex; align-items: center; gap: 8px; padding: 7px 12px; border-radius: 999px; background: var(--blanco); border: 1px solid var(--gris-borde); font-size: 0.82rem; font-weight: 600; transition: var(--transicion); }
+    .filtro-activo:hover { border-color: var(--rojo); color: var(--rojo); }
+    .cat-main .productos-grid { grid-template-columns: repeat(3, 1fr); }
+    .cat-mas { text-align: center; margin-top: 44px; }
+    .velo-filtros { position: fixed; inset: 0; z-index: 210; background: rgba(11,11,15,0.55); opacity: 0; visibility: hidden; transition: var(--transicion); }
+    .velo-filtros.visible { opacity: 1; visibility: visible; }
+
+    /* Vista rápida en la tarjeta */
+    .producto-img[data-vista] { cursor: zoom-in; }
+    .vista-btn { position: absolute; left: 12px; right: 12px; bottom: 12px; z-index: 2; padding: 11px; border: 0; border-radius: 4px; background: rgba(255,255,255,0.96); color: var(--negro); font-weight: 600; font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase; opacity: 0; transform: translateY(8px); transition: var(--transicion); }
+    .producto:hover .vista-btn, .vista-btn:focus-visible { opacity: 1; transform: none; }
+    @media (hover: none) { .vista-btn { display: none; } }
+
+    /* Ventana de vista rápida */
+    .vista-caja { width: min(900px, 100%); padding: 0; border-radius: 10px; overflow: hidden; }
+    .vista-caja .modal-cerrar { z-index: 3; background: rgba(255,255,255,0.95); }
+    .vista-grid { display: grid; grid-template-columns: 1.05fr 1fr; }
+    .vista-foto { position: relative; background: var(--gris-claro); min-height: 360px; }
+    .vista-foto img { width: 100%; height: 100%; object-fit: cover; position: absolute; inset: 0; }
+    .vista-info { padding: 40px 34px; display: flex; flex-direction: column; gap: 14px; }
+    .vista-info h2 { font-family: var(--serif); font-size: 1.8rem; line-height: 1.15; font-weight: 600; margin: 0; }
+    .vista-info .precios { margin: 0; }
+    .vista-info .tallas { margin: 4px 0 6px; }
+    .vista-agotado { color: #9a1c1c; font-weight: 700; }
+    .vista-notas { list-style: none; color: var(--gris-texto); font-size: 0.85rem; display: grid; gap: 6px; padding-top: 12px; border-top: 1px solid var(--gris-borde); }
+
+    @media (max-width: 900px) {
+      .cat-layout { grid-template-columns: minmax(0, 1fr); }
+      .cat-lateral { position: fixed; top: 0; bottom: 0; left: 0; z-index: 220; width: min(340px, 88vw); max-height: none; border-radius: 0; border: 0; transform: translateX(-102%); transition: transform 0.35s cubic-bezier(.2,.7,.2,1); box-shadow: 0 0 60px rgba(0,0,0,0.3); align-content: start; }
+      .cat-lateral.abierto { transform: none; }
+      .cat-lateral-cab { display: flex; align-items: center; justify-content: space-between; }
+      .cat-lateral-cab h3 { font-family: var(--serif); font-size: 1.4rem; }
+      .cat-aplicar { display: inline-flex; position: sticky; bottom: 0; }
+      .cat-btn-filtros { display: inline-flex; }
+      .cat-main .productos-grid { grid-template-columns: repeat(3, 1fr); }
     }
+    @media (max-width: 720px) {
+      .cat-main .productos-grid { grid-template-columns: repeat(2, 1fr); gap: 22px 12px; }
+      .vista-grid { grid-template-columns: 1fr; }
+      .vista-foto { min-height: 0; aspect-ratio: 4 / 3; }
+      .vista-info { padding: 24px 22px 26px; }
+      .cat-barra .resultados-info { flex-basis: 100%; order: 3; }
+    }
+
+    /* ---------- Catálogo: pestañas, columnas y animación ---------- */
+    .cat-main { min-width: 0; }
+    .cat-tabs { display: flex; gap: 8px; overflow-x: auto; padding: 2px 0 14px; margin-bottom: 6px; border-bottom: 1px solid var(--gris-borde); scrollbar-width: none; }
+    .cat-tabs::-webkit-scrollbar { display: none; }
+    .cat-tab { flex: none; display: inline-flex; align-items: center; gap: 8px; padding: 10px 18px; border-radius: 999px; border: 1.5px solid var(--gris-borde); background: var(--blanco); font-weight: 600; font-size: 0.88rem; transition: var(--transicion); }
+    .cat-tab span { font-size: 0.72rem; min-width: 22px; padding: 2px 7px; border-radius: 999px; background: var(--gris-claro); color: var(--gris-texto); text-align: center; }
+    .cat-tab:hover { border-color: var(--negro); }
+    .cat-tab.activo { background: var(--negro); border-color: var(--negro); color: var(--blanco); }
+    .cat-tab.activo span { background: rgba(255,255,255,0.2); color: var(--blanco); }
+    .cat-barra { margin-top: 14px; }
+    .vista-cols { display: none; gap: 4px; }
+    .vista-cols button { width: 38px; height: 38px; display: grid; place-items: center; border: 1.5px solid var(--gris-borde); border-radius: 8px; background: var(--blanco); color: var(--gris-texto); transition: var(--transicion); }
+    .vista-cols button.activo { background: var(--negro); border-color: var(--negro); color: var(--blanco); }
+    .productos-grid .producto { animation: aparecer-prenda 0.5s cubic-bezier(.2,.7,.2,1) both; }
+    @keyframes aparecer-prenda { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+    @media (min-width: 1101px) {
+      .vista-cols { display: flex; }
+      .cat-main .productos-grid[data-cols="4"] { grid-template-columns: repeat(4, 1fr); gap: 26px 16px; }
+    }
+    @media (prefers-reduced-motion: reduce) { .productos-grid .producto { animation: none; } }
+
+    /* ---------- Accesibilidad y pulido (aportes ZAVI 2.0) ---------- */
     html { scroll-padding-top: 150px; }
-    body { background: var(--zavi-paper); }
-    ::selection { background: rgba(176,141,87,.22); color: var(--zavi-ink); }
     a, button, input, select, textarea { -webkit-tap-highlight-color: transparent; }
-    :focus-visible { outline: 3px solid var(--zavi-gold) !important; outline-offset: 3px; }
-    .contenedor { padding-left: clamp(16px, 3vw, 28px); padding-right: clamp(16px, 3vw, 28px); }
-    .barra-promo { background: var(--zavi-ink); letter-spacing: .015em; }
-    .cabecera { box-shadow: 0 8px 28px rgba(17,17,20,.055); }
-    .cabecera-principal { min-height: 82px; }
-    .logo-img { max-height: 48px; }
-    .logo-texto { letter-spacing: .2em; }
-    .buscador input, .buscador select { transition: background .2s, border-color .2s, box-shadow .2s; }
-    .buscador:focus-within { filter: drop-shadow(0 5px 12px rgba(17,17,20,.07)); }
-    .menu-categorias a.nivel1 { letter-spacing: .015em; }
-    .slide { min-height: clamp(420px, 48vw, 590px); }
-    .slide::before { background: linear-gradient(90deg, rgba(9,9,12,.88) 0%, rgba(9,9,12,.62) 48%, rgba(9,9,12,.12) 100%); }
-    .slide-texto h1, .slide-texto h2 { text-wrap: balance; }
-    .btn { min-height: 46px; transition: transform .22s var(--zavi-ease), box-shadow .22s, background .22s, color .22s; }
+    :focus-visible { outline: 3px solid var(--dorado) !important; outline-offset: 3px; }
+    .btn { min-height: 46px; }
     .btn:active, .chip:active, .accion:active { transform: scale(.98); }
-    .titulo-seccion { text-wrap: balance; }
-    .catalogo { background: #f4f2ef; }
-    .filtros { align-items: flex-start; }
-    .chips { gap: 9px; }
-    .chip { min-height: 40px; padding-inline: 18px; }
-    .productos-grid { grid-template-columns: repeat(4, minmax(0,1fr)); gap: 28px 22px; }
-    .producto { border-radius: 10px; overflow: hidden; background: #fff; border: 1px solid rgba(17,17,20,.07); box-shadow: 0 4px 18px rgba(17,17,20,.035); }
-    .producto:hover { transform: translateY(-5px); box-shadow: 0 16px 36px rgba(17,17,20,.10); border-color: rgba(176,141,87,.45); }
-    .producto-img { border-radius: 0; aspect-ratio: 4 / 4.8; }
-    .producto-img img { transition: transform .65s var(--zavi-ease); }
-    .producto-info, .producto:hover .producto-info { padding: 16px 16px 18px; }
-    .producto-info h3 { min-height: 2.6em; }
-    .precio-actual { color: #17171b; }
-    .badge { border-radius: 4px; }
-    .fav { box-shadow: 0 3px 12px rgba(0,0,0,.10); }
-    .talla { min-width: 40px; }
-    .beneficios { margin-top: 56px; }
-    .tarjeta { box-shadow: 0 5px 20px rgba(17,17,20,.035); }
-    .testimonios-grid { align-items: stretch; }
-    .testimonio { border: 1px solid var(--zavi-line); box-shadow: 0 5px 20px rgba(17,17,20,.035); }
-    .formulario { border-color: var(--zavi-line); }
-    footer { border-top: 3px solid var(--zavi-gold); }
-    .skip-link {
-      position: fixed; z-index: 1000; top: 10px; left: 10px; padding: 12px 18px;
-      background: #fff; color: #111; border: 2px solid var(--zavi-gold); border-radius: 8px;
-      transform: translateY(-160%); transition: transform .2s;
-    }
+    footer { border-top: 3px solid var(--dorado); }
+    .skip-link { position: fixed; z-index: 1000; top: 10px; left: 10px; padding: 12px 18px; background: #fff; color: #111; border: 2px solid var(--dorado); border-radius: 8px; transform: translateY(-160%); transition: transform .2s; }
     .skip-link:focus { transform: translateY(0); }
+    .cuenta-regresiva[hidden] { display: none; }
     .producto-img img:not([src]), .producto-img img[src=""] { display: none; }
-    @media (max-width: 1050px) {
-      .cabecera-principal { gap: 16px; }
-      .productos-grid { grid-template-columns: repeat(3, minmax(0,1fr)); }
-      .acciones .texto { display: none; }
-    }
-    @media (max-width: 760px) {
-      html { scroll-padding-top: 120px; }
-      .barra-promo .contenedor { justify-content: center; }
-      .promo-enlaces { display: none; }
-      .cabecera-principal { min-height: auto; padding-top: 12px; padding-bottom: 12px; display: grid; grid-template-columns: 1fr auto; gap: 10px 14px; }
-      .logo { grid-column: 1; grid-row: 1; }
-      .logo-img { max-width: 118px; height: 40px; }
-      .acciones { grid-column: 2; grid-row: 1; gap: 2px; }
-      .accion { padding: 7px 9px; }
-      .accion svg { width: 22px; height: 22px; }
-      .buscador { grid-column: 1 / -1; grid-row: 2; max-width: none; width: 100%; }
-      .menu-categorias { overflow-x: auto; scrollbar-width: none; }
-      .menu-categorias::-webkit-scrollbar { display: none; }
-      .menu-categorias .contenedor { width: max-content; min-width: 100%; }
-      .menu-categorias ul { gap: 2px; }
-      .menu-categorias a.nivel1 { padding: 12px 13px; font-size: .84rem; }
-      .desplegable { display: none; }
-      .slide { min-height: 470px; }
-      .slide-texto { padding: 38px 28px; }
-      .slide-texto h1, .slide-texto h2 { font-size: clamp(2rem, 8vw, 2.8rem); }
-      .flecha { width: 40px; height: 40px; }
-      .flecha.prev { left: 10px; } .flecha.next { right: 10px; }
-      .productos-grid { grid-template-columns: repeat(2, minmax(0,1fr)); gap: 18px 12px; }
-      .producto-info, .producto:hover .producto-info { padding: 12px 10px 14px; }
-      .producto-info h3 { font-size: .92rem; }
-      .precio-actual { font-size: 1.05rem; }
-      .producto-info .btn { padding: 10px 8px; font-size: .78rem; letter-spacing: 0; }
-      .talla { min-width: 32px; height: 30px; padding: 0 7px; }
-      .fav { width: 34px; height: 34px; }
-      .beneficios-grid, .testimonios-grid { grid-template-columns: 1fr; gap: 14px; }
-      .categorias-grid { grid-template-columns: repeat(2, minmax(0,1fr)); gap: 12px; }
-      .nosotros-grid, .contacto-grid { grid-template-columns: 1fr; gap: 28px; }
-      .newsletter-caja { grid-template-columns: 1fr; padding: 32px 22px; gap: 20px; }
-      .newsletter-msg { grid-column: 1; }
-      .newsletter-form { flex-direction: column; }
-      .newsletter-form .btn { width: 100%; }
-      .politicas-grid { grid-template-columns: 1fr; }
-      .cifras { flex-wrap: wrap; gap: 22px; }
-    }
-    @media (max-width: 390px) {
-      .contenedor { padding-left: 14px; padding-right: 14px; }
-      .logo-texto { font-size: 1.05rem; padding: 6px 10px; }
-      .logo-eslogan { font-size: .64rem; }
-      .slide-texto { padding: 34px 22px; }
-      .slide-botones { gap: 8px; }
-      .slide-botones .btn { width: 100%; }
-      .cuenta-regresiva { gap: 5px; }
-      .cuenta-regresiva div { min-width: 52px; padding: 8px 5px; }
-    }
+    .producto-img.imagen-no-disponible { display: grid; place-items: center; background: linear-gradient(135deg,#efede8,#dedbd4); }
+    .producto-img.imagen-no-disponible::after { content: "ZAVI · Imagen no disponible"; color: #77716a; font-size: .78rem; letter-spacing: .08em; text-align: center; padding: 12px; }
+    @media (max-width: 760px) { html { scroll-padding-top: 120px; } }
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
     }
-
-  
-    .producto-img.imagen-no-disponible { display:grid; place-items:center; background:linear-gradient(135deg,#efede8,#dedbd4); }
-    .producto-img.imagen-no-disponible::after { content:"ZAVI · Imagen no disponible"; color:#77716a; font-size:.78rem; letter-spacing:.08em; text-align:center; padding:12px; }
   </style>
 </head>
 
 <body>
-
   <a class="skip-link" href="#contenido-principal">Saltar al contenido</a>
-
 
   <!-- ================= BARRA DE PROMOCIONES ================= -->
   <div class="barra-promo">
@@ -994,19 +987,19 @@
         </div>
         <div class="categorias-grid">
           <a href="#productos" class="categoria reveal" data-filtro="mujer">
-            <img src="https://images.unsplash.com/photo-1434389677669-e08b4cac3105?auto=format&fit=crop&w=700&q=80" alt="Ropa de mujer" loading="lazy" decoding="async" onerror="this.style.display='none'" />
+            <img src="https://images.unsplash.com/photo-1434389677669-e08b4cac3105?auto=format&fit=crop&w=700&q=80" alt="Ropa de mujer" loading="lazy" onerror="this.style.display='none'" />
             <div class="categoria-info"><h3>Mujer</h3><span>Ver prendas</span></div>
           </a>
           <a href="#productos" class="categoria reveal retraso-1" data-filtro="hombre">
-            <img src="https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?auto=format&fit=crop&w=700&q=80" alt="Ropa de hombre" loading="lazy" decoding="async" onerror="this.style.display='none'" />
+            <img src="https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?auto=format&fit=crop&w=700&q=80" alt="Ropa de hombre" loading="lazy" onerror="this.style.display='none'" />
             <div class="categoria-info"><h3>Hombre</h3><span>Ver prendas</span></div>
           </a>
           <a href="#productos" class="categoria reveal retraso-2" data-filtro="accesorios">
-            <img src="https://images.unsplash.com/photo-1584917865442-de89df76afd3?auto=format&fit=crop&w=700&q=80" alt="Accesorios" loading="lazy" decoding="async" onerror="this.style.display='none'" />
+            <img src="https://images.unsplash.com/photo-1584917865442-de89df76afd3?auto=format&fit=crop&w=700&q=80" alt="Accesorios" loading="lazy" onerror="this.style.display='none'" />
             <div class="categoria-info"><h3>Accesorios</h3><span>Ver productos</span></div>
           </a>
           <a href="#contacto" class="categoria reveal retraso-3" id="catMayor">
-            <img src="https://images.unsplash.com/photo-1445205170230-053b83016050?auto=format&fit=crop&w=700&q=80" alt="Compra por mayor" loading="lazy" decoding="async" onerror="this.style.display='none'" />
+            <img src="https://images.unsplash.com/photo-1445205170230-053b83016050?auto=format&fit=crop&w=700&q=80" alt="Compra por mayor" loading="lazy" onerror="this.style.display='none'" />
             <div class="categoria-info"><h3>Por mayor</h3><span>Precios especiales</span></div>
           </a>
         </div>
@@ -1016,34 +1009,84 @@
     <!-- ================= CATÁLOGO DE PRODUCTOS ================= -->
     <section class="catalogo" id="productos">
       <div class="contenedor">
-        <div class="cabecera-seccion reveal">
+        <div class="cat-cab reveal">
           <div>
             <span class="etiqueta">Catálogo</span>
-            <h2 class="titulo-seccion" style="margin:0">Nuestras prendas</h2>
+            <h2 class="titulo-seccion" style="margin:0 0 10px">Nuestras prendas</h2>
+            <p class="subtitulo-seccion" style="margin:0">Filtra por categoría, talla y precio. Agrega al carrito y envía tu pedido por WhatsApp.</p>
           </div>
-          <p class="subtitulo-seccion" style="margin:0">Agrega al carrito y envía tu pedido por WhatsApp.</p>
-        </div>
-
-        <div class="filtros">
-          <div class="chips" id="chips">
-            <button class="chip activo" data-filtro="todo">Todo</button>
-            <button class="chip" data-filtro="mujer">Mujer</button>
-            <button class="chip" data-filtro="hombre">Hombre</button>
-            <button class="chip" data-filtro="accesorios">Accesorios</button>
-            <button class="chip" data-filtro="favoritos">♥ Favoritos</button>
-          </div>
-          <label class="orden">Ordenar por
-            <select id="orden">
-              <option value="relevancia">Relevancia</option>
-              <option value="menor">Menor precio</option>
-              <option value="mayor">Mayor precio</option>
-              <option value="descuento">Mayor descuento</option>
-            </select>
+          <label class="cat-buscar">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+            <input type="search" id="catBuscar" placeholder="Buscar en el catálogo…" aria-label="Buscar en el catálogo" autocomplete="off" />
           </label>
         </div>
-        <p class="resultados-info" id="resultadosInfo" aria-live="polite"></p>
-        <div class="productos-grid" id="productosGrid"></div>
+
+        <div class="cat-layout">
+          <aside class="cat-lateral" id="catLateral" aria-label="Filtros del catálogo">
+            <div class="cat-lateral-cab"><h3>Filtros</h3><button type="button" class="cerrar" id="catCerrarFiltros" aria-label="Cerrar filtros">×</button></div>
+            <div class="fgrupo">
+              <h4>Categoría</h4>
+              <div class="chips lista-v" id="chips">
+                <button class="chip activo" data-filtro="todo">Todo</button>
+                <button class="chip" data-filtro="mujer">Mujer</button>
+                <button class="chip" data-filtro="hombre">Hombre</button>
+                <button class="chip" data-filtro="accesorios">Accesorios</button>
+                <button class="chip" data-filtro="favoritos">♥ Favoritos</button>
+              </div>
+            </div>
+            <div class="fgrupo" id="grupoTipos" hidden>
+              <h4>Tipo de prenda</h4>
+              <div class="chips lista-v" id="catTipos"></div>
+            </div>
+            <div class="fgrupo">
+              <h4>Precio (S/)</h4>
+              <div class="rango">
+                <input type="text" inputmode="numeric" id="precioMin" placeholder="Mín" aria-label="Precio mínimo" />
+                <span>–</span>
+                <input type="text" inputmode="numeric" id="precioMax" placeholder="Máx" aria-label="Precio máximo" />
+              </div>
+            </div>
+            <div class="fgrupo" id="grupoTallas" hidden>
+              <h4>Talla</h4>
+              <div class="tallas-filtro" id="catTallas"></div>
+            </div>
+            <div class="fgrupo">
+              <label class="fcheck"><input type="checkbox" id="fOferta" /> Solo ofertas</label>
+              <label class="fcheck"><input type="checkbox" id="fDisp" /> Solo disponibles</label>
+            </div>
+            <button type="button" class="btn btn-secundario btn-bloque" id="catLimpiar">Limpiar filtros</button>
+            <button type="button" class="btn btn-primario btn-bloque cat-aplicar" id="catAplicar">Ver resultados</button>
+          </aside>
+
+          <div class="cat-main">
+            <div class="cat-tabs" id="catTabs" role="tablist" aria-label="Categorías"></div>
+            <div class="cat-barra">
+              <button type="button" class="btn btn-secundario cat-btn-filtros" id="catAbrirFiltros">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M7 12h10M10 18h4"/></svg> Filtros
+              </button>
+              <p class="resultados-info" id="resultadosInfo" aria-live="polite"></p>
+              <div class="vista-cols" id="vistaCols" role="group" aria-label="Columnas">
+                <button type="button" data-cols="3" aria-label="3 columnas" title="3 columnas"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><rect x="2" y="4" width="5" height="16" rx="1"/><rect x="9.5" y="4" width="5" height="16" rx="1"/><rect x="17" y="4" width="5" height="16" rx="1"/></svg></button>
+                <button type="button" data-cols="4" aria-label="4 columnas" title="4 columnas"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><rect x="1" y="4" width="4" height="16" rx="1"/><rect x="7" y="4" width="4" height="16" rx="1"/><rect x="13" y="4" width="4" height="16" rx="1"/><rect x="19" y="4" width="4" height="16" rx="1"/></svg></button>
+              </div>
+              <label class="orden">Ordenar por
+                <select id="orden">
+                  <option value="relevancia">Relevancia</option>
+                  <option value="menor">Menor precio</option>
+                  <option value="mayor">Mayor precio</option>
+                  <option value="descuento">Mayor descuento</option>
+                  <option value="nuevos">Novedades primero</option>
+                  <option value="nombre">Nombre A–Z</option>
+                </select>
+              </label>
+            </div>
+            <div class="filtros-activos" id="filtrosActivos"></div>
+            <div class="productos-grid" id="productosGrid" data-cols="3"></div>
+            <div class="cat-mas"><button type="button" class="btn btn-secundario" id="catMas" hidden>Ver más prendas</button></div>
+          </div>
+        </div>
       </div>
+      <div class="velo-filtros" id="veloFiltros"></div>
     </section>
 
     <!-- ================= OFERTAS (cuenta regresiva) ================= -->
@@ -1082,6 +1125,7 @@
             <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>Atención personalizada y cercana</li>
             <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>Opciones para compra individual o por mayor</li>
           </ul>
+          <!-- Cifras de ejemplo: reemplázalas por las reales de tu negocio -->
           <div class="cifras">
             <div><strong>1 a 1</strong><span>Atención cercana</span></div>
             <div><strong>Yape</strong><span>Pago práctico</span></div>
@@ -1089,7 +1133,7 @@
           </div>
         </div>
         <div class="nosotros-imagen reveal retraso-1">
-          <img src="https://images.unsplash.com/photo-1523381210434-271e8be1f52b?auto=format&fit=crop&w=1000&q=80" alt="Prendas de ropa dobladas y organizadas" loading="lazy" decoding="async" onerror="this.style.display='none'" />
+          <img src="https://images.unsplash.com/photo-1523381210434-271e8be1f52b?auto=format&fit=crop&w=1000&q=80" alt="Prendas de ropa dobladas y organizadas" loading="lazy" onerror="this.style.display='none'" />
         </div>
       </div>
     </section>
@@ -1306,6 +1350,14 @@
   <div class="aviso" id="aviso" role="status"></div>
 
   <!-- ================= VENTANA DE PAGO CON YAPE ================= -->
+  <!-- Vista rápida de una prenda -->
+  <div class="modal" id="modalVista" role="dialog" aria-modal="true" aria-labelledby="vistaTitulo" aria-hidden="true">
+    <div class="modal-caja vista-caja">
+      <button class="cerrar modal-cerrar" id="cerrarVista" aria-label="Cerrar">×</button>
+      <div id="vistaContenido"></div>
+    </div>
+  </div>
+
   <div class="modal" id="modalPago" role="dialog" aria-modal="true" aria-labelledby="pagoTitulo" aria-hidden="true">
     <div class="modal-caja">
       <button class="cerrar modal-cerrar" id="cerrarPago" aria-label="Cerrar">×</button>
@@ -1402,6 +1454,7 @@
       id: p.id, nombre: String(p.nombre || ''), cat: p.cat, tipo: p.tipo, precio: Number(p.precio) || 0,
       antes: (Number(p.antes) > Number(p.precio)) ? Number(p.antes) : null,   // solo hay oferta si el precio anterior es mayor
       nuevo: !!p.nuevo, agotado: !!p.agotado, img: p.img || '',
+      soloOferta: !!p.soloOferta,                 // solo aparece en "Ofertas de la semana", no en el catálogo
       tallas: Array.isArray(p.tallas) ? p.tallas.map(String).filter(Boolean) : []
     }));
 
@@ -1441,7 +1494,9 @@
     // Forma de entrega elegida en el carrito: 'envio' (a domicilio) o 'recojo' (en tienda)
     let entrega = leer('zavi_entrega', 'envio');
     if (entrega !== 'recojo' || !RECOJO) entrega = 'envio';
-    const filtro = { cat: 'todo', tipo: null, texto: '', orden: 'relevancia' };
+    const PAG = 12;                                  // prendas que se muestran por tanda en el catálogo
+    const NOMBRE_TIPO = { vestidos: 'Vestidos', polos: 'Polos', pantalones: 'Jeans y pantalones', casacas: 'Casacas', bolsos: 'Bolsos y mochilas', relojes: 'Relojes' };
+    const filtro = { cat: 'todo', tipo: null, texto: '', orden: 'relevancia', min: null, max: null, talla: null, oferta: false, disp: false, mostrar: PAG, cols: 3 };
 
     /* =========================================================
        1. BARRA DE PROMOCIONES (mensajes rotativos)
@@ -1481,12 +1536,13 @@
       const esFav = favoritos.includes(p.id);
       return `
         <article class="producto${p.agotado ? ' agotado' : ''}" data-id="${p.id}">
-          <div class="producto-img">
-            ${p.agotado ? '<span class="badge agotado">Agotado</span>' : d ? `<span class="badge">-${d}%</span>` : (p.nuevo ? '<span class="badge nuevo">Nuevo</span>' : '')}
+          <div class="producto-img" data-vista="${p.id}">
+            ${p.agotado ? '<span class="badge agotado">Agotado</span>' : d ? `<span class="badge">-${d}%</span>` : p.soloOferta ? '<span class="badge">Oferta</span>' : (p.nuevo ? '<span class="badge nuevo">Nuevo</span>' : '')}
             <button class="fav ${esFav ? 'activo' : ''}" data-fav="${p.id}" aria-label="Marcar favorito" aria-pressed="${esFav}">
               <svg viewBox="0 0 24 24"><path d="M20.8 5.6a5.2 5.2 0 00-7.4 0L12 7l-1.4-1.4a5.2 5.2 0 00-7.4 7.4L12 21.8l8.8-8.8a5.2 5.2 0 000-7.4z"/></svg>
             </button>
             ${p.img ? `<img src="${esc(p.img)}" alt="${esc(p.nombre)}" loading="lazy" decoding="async" onerror="this.style.display='none'" />` : ''}
+            <button type="button" class="vista-btn" data-vista="${p.id}" aria-label="Vista rápida de ${esc(p.nombre)}">Vista rápida</button>
           </div>
           <div class="producto-info">
             <span class="producto-cat">${etiquetaCat[p.cat]}</span>
@@ -1505,7 +1561,8 @@
        3. CATÁLOGO: filtros, búsqueda y orden
        ========================================================= */
     function renderCatalogo() {
-      let lista = PRODUCTOS.filter(p => {
+      const base = PRODUCTOS.filter(p => !p.soloOferta);        // las prendas exclusivas de ofertas no van en el catálogo
+      let lista = base.filter(p => {
         if (filtro.cat === 'favoritos') { if (!favoritos.includes(p.id)) return false; }
         else if (filtro.cat !== 'todo' && p.cat !== filtro.cat) return false;
         if (filtro.tipo && p.tipo !== filtro.tipo) return false;
@@ -1513,28 +1570,118 @@
           const t = filtro.texto.toLowerCase();
           if (!(p.nombre.toLowerCase().includes(t) || p.tipo.includes(t) || p.cat.includes(t))) return false;
         }
+        if (filtro.min !== null && p.precio < filtro.min) return false;
+        if (filtro.max !== null && p.precio > filtro.max) return false;
+        if (filtro.talla && !p.tallas.includes(filtro.talla)) return false;
+        if (filtro.oferta && !(descuento(p) > 0)) return false;
+        if (filtro.disp && p.agotado) return false;
         return true;
       });
 
       if (filtro.orden === 'menor') lista.sort((a, b) => a.precio - b.precio);
       if (filtro.orden === 'mayor') lista.sort((a, b) => b.precio - a.precio);
       if (filtro.orden === 'descuento') lista.sort((a, b) => descuento(b) - descuento(a));
+      if (filtro.orden === 'nuevos') lista.sort((a, b) => (b.nuevo ? 1 : 0) - (a.nuevo ? 1 : 0));
+      if (filtro.orden === 'nombre') lista.sort((a, b) => a.nombre.localeCompare(b.nombre, 'es'));
 
+      const visibles = lista.slice(0, filtro.mostrar);
       $('#productosGrid').innerHTML = lista.length
-        ? lista.map(tarjetaProducto).join('')
-        : '<p class="vacio">No encontramos prendas con esos filtros. Prueba con otra búsqueda.</p>';
-      $('#resultadosInfo').textContent = lista.length + (lista.length === 1 ? ' producto' : ' productos');
+        ? visibles.map(tarjetaProducto).join('')
+        : '<p class="vacio">No encontramos prendas con esos filtros.<br><button type="button" class="btn btn-secundario" data-limpiar style="margin-top:14px">Limpiar filtros</button></p>';
+      $('#resultadosInfo').textContent = lista.length
+        ? (visibles.length < lista.length ? `Mostrando ${visibles.length} de ${lista.length} prendas` : `${lista.length} ${lista.length === 1 ? 'prenda' : 'prendas'}`)
+        : '0 prendas';
+      const mas = $('#catMas'); mas.hidden = visibles.length >= lista.length;
+      mas.textContent = `Ver más prendas (${lista.length - visibles.length})`;
 
-      // Estado visual de los chips y del selector del buscador
+      // Pestañas de categoría con la cantidad de prendas de cada una
+      const cuenta = c => c === 'todo' ? base.length : c === 'favoritos' ? base.filter(p => favoritos.includes(p.id)).length : base.filter(p => p.cat === c).length;
+      $('#catTabs').innerHTML = [['todo', 'Todo'], ['mujer', 'Mujer'], ['hombre', 'Hombre'], ['accesorios', 'Accesorios'], ['favoritos', '♥ Favoritos']]
+        .filter(([c]) => c === 'todo' || c === 'favoritos' || cuenta(c) > 0)
+        .map(([c, t]) => `<button type="button" role="tab" class="cat-tab${filtro.cat === c ? ' activo' : ''}" data-filtro="${c}" aria-selected="${filtro.cat === c}">${t}<span>${cuenta(c)}</span></button>`).join('');
+      $('#productosGrid').dataset.cols = filtro.cols;
+      $$('#vistaCols button').forEach(b => b.classList.toggle('activo', b.dataset.cols === String(filtro.cols)));
+
+      // Panel lateral: categorías, tipos disponibles, tallas disponibles
       $$('#chips .chip').forEach(c => c.classList.toggle('activo', c.dataset.filtro === filtro.cat));
       if (['todo', 'mujer', 'hombre', 'accesorios'].includes(filtro.cat)) $('#buscadorCat').value = filtro.cat;
+      const tiposCat = ['mujer', 'hombre', 'accesorios'].includes(filtro.cat)
+        ? [...new Set(base.filter(p => p.cat === filtro.cat).map(p => p.tipo))] : [];
+      $('#grupoTipos').hidden = !tiposCat.length;
+      $('#catTipos').innerHTML = tiposCat.length
+        ? `<button class="chip${filtro.tipo ? '' : ' activo'}" data-filtro="${filtro.cat}">Todos</button>`
+          + tiposCat.map(t => `<button class="chip${filtro.tipo === t ? ' activo' : ''}" data-filtro="${filtro.cat}" data-tipo="${esc(t)}">${esc(NOMBRE_TIPO[t] || t)}</button>`).join('') : '';
+      const orden = ['XXS', 'XS', 'S', 'M', 'L', 'XL', 'XXL', '3XL'];
+      const tallas = [...new Set(base.flatMap(p => p.tallas))].sort((x, y) => {
+        const i = orden.indexOf(x), j = orden.indexOf(y);
+        if (i >= 0 && j >= 0) return i - j; if (i >= 0) return -1; if (j >= 0) return 1;
+        return (parseFloat(x) - parseFloat(y)) || x.localeCompare(y);
+      });
+      $('#grupoTallas').hidden = !tallas.length;
+      $('#catTallas').innerHTML = tallas.map(t => `<button type="button" class="talla-f${filtro.talla === t ? ' activa' : ''}" data-ftalla="${esc(t)}" aria-pressed="${filtro.talla === t}">${esc(t)}</button>`).join('');
+      $('#fOferta').checked = filtro.oferta; $('#fDisp').checked = filtro.disp;
+      if (document.activeElement !== $('#precioMin')) $('#precioMin').value = filtro.min === null ? '' : filtro.min;
+      if (document.activeElement !== $('#precioMax')) $('#precioMax').value = filtro.max === null ? '' : filtro.max;
+      if (document.activeElement !== $('#catBuscar')) $('#catBuscar').value = filtro.texto;
+
+      // Filtros activos (se quitan de uno en uno)
+      const act = [];
+      if (filtro.cat !== 'todo') act.push(['cat', filtro.cat === 'favoritos' ? 'Favoritos' : etiquetaCat[filtro.cat]]);
+      if (filtro.tipo) act.push(['tipo', NOMBRE_TIPO[filtro.tipo] || filtro.tipo]);
+      if (filtro.texto) act.push(['texto', '“' + filtro.texto + '”']);
+      if (filtro.min !== null || filtro.max !== null) act.push(['precio', filtro.min !== null && filtro.max !== null ? `S/ ${filtro.min} – ${filtro.max}` : filtro.min !== null ? `Desde S/ ${filtro.min}` : `Hasta S/ ${filtro.max}`]);
+      if (filtro.talla) act.push(['talla', 'Talla ' + filtro.talla]);
+      if (filtro.oferta) act.push(['oferta', 'Solo ofertas']);
+      if (filtro.disp) act.push(['disp', 'Solo disponibles']);
+      $('#filtrosActivos').innerHTML = act.map(([k, t]) => `<button type="button" class="filtro-activo" data-fq="${k}">${esc(t)} <span aria-hidden="true">×</span><span class="solo-lectores"> quitar filtro</span></button>`).join('');
     }
 
     // Aplica un filtro de categoría (usado por menú, chips, categorías y footer)
     function aplicarFiltro(cat, tipo = null) {
-      filtro.cat = cat; filtro.tipo = tipo;
+      filtro.cat = cat; filtro.tipo = tipo; filtro.mostrar = PAG;
       renderCatalogo();
     }
+    function limpiarFiltros() {
+      Object.assign(filtro, { cat: 'todo', tipo: null, texto: '', min: null, max: null, talla: null, oferta: false, disp: false, mostrar: PAG });
+      $('#buscadorTexto').value = '';
+      renderCatalogo();
+    }
+
+    // Controles del panel de filtros
+    const numFiltro = v => { const n = parseFloat(String(v).replace(',', '.')); return isFinite(n) && n >= 0 ? n : null; };
+    $('#precioMin').addEventListener('input', (e) => { filtro.min = numFiltro(e.target.value); filtro.mostrar = PAG; renderCatalogo(); });
+    $('#precioMax').addEventListener('input', (e) => { filtro.max = numFiltro(e.target.value); filtro.mostrar = PAG; renderCatalogo(); });
+    $('#fOferta').addEventListener('change', (e) => { filtro.oferta = e.target.checked; filtro.mostrar = PAG; renderCatalogo(); });
+    $('#fDisp').addEventListener('change', (e) => { filtro.disp = e.target.checked; filtro.mostrar = PAG; renderCatalogo(); });
+    $('#catBuscar').addEventListener('input', (e) => { filtro.texto = e.target.value.trim(); $('#buscadorTexto').value = e.target.value; filtro.mostrar = PAG; renderCatalogo(); });
+    $('#catLimpiar').addEventListener('click', limpiarFiltros);
+    $('#catMas').addEventListener('click', () => { filtro.mostrar += PAG; renderCatalogo(); });
+    $('#catTallas').addEventListener('click', (e) => {
+      const b = e.target.closest('[data-ftalla]'); if (!b) return;
+      filtro.talla = filtro.talla === b.dataset.ftalla ? null : b.dataset.ftalla; filtro.mostrar = PAG; renderCatalogo();
+    });
+    $('#filtrosActivos').addEventListener('click', (e) => {
+      const b = e.target.closest('[data-fq]'); if (!b) return;
+      const k = b.dataset.fq;
+      if (k === 'cat') { filtro.cat = 'todo'; filtro.tipo = null; }
+      if (k === 'tipo') filtro.tipo = null;
+      if (k === 'texto') { filtro.texto = ''; $('#buscadorTexto').value = ''; }
+      if (k === 'precio') { filtro.min = null; filtro.max = null; }
+      if (k === 'talla') filtro.talla = null;
+      if (k === 'oferta') filtro.oferta = false;
+      if (k === 'disp') filtro.disp = false;
+      filtro.mostrar = PAG; renderCatalogo();
+    });
+    $('#productosGrid').addEventListener('click', (e) => { if (e.target.closest('[data-limpiar]')) limpiarFiltros(); });
+    // Móvil: los filtros se abren como panel lateral
+    function panelFiltros(abrir) {
+      $('#catLateral').classList.toggle('abierto', abrir); $('#veloFiltros').classList.toggle('visible', abrir);
+      document.body.style.overflow = abrir ? 'hidden' : '';
+    }
+    $('#catAbrirFiltros').addEventListener('click', () => panelFiltros(true));
+    $('#catCerrarFiltros').addEventListener('click', () => panelFiltros(false));
+    $('#catAplicar').addEventListener('click', () => { panelFiltros(false); $('#productos').scrollIntoView({ behavior: 'smooth' }); });
+    $('#veloFiltros').addEventListener('click', () => panelFiltros(false));
 
     // Cualquier elemento con data-filtro actualiza el catálogo
     document.addEventListener('click', (e) => {
@@ -1549,22 +1696,52 @@
       e.preventDefault();
       filtro.texto = $('#buscadorTexto').value.trim();
       filtro.cat = $('#buscadorCat').value;
-      filtro.tipo = null;
+      filtro.tipo = null; filtro.mostrar = PAG;
       renderCatalogo();
       $('#productos').scrollIntoView({ behavior: 'smooth' });
     });
     $('#buscadorTexto').addEventListener('input', (e) => {      // filtra mientras se escribe
-      filtro.texto = e.target.value.trim(); renderCatalogo();
+      filtro.texto = e.target.value.trim(); filtro.mostrar = PAG; renderCatalogo();
     });
     $('#buscadorCat').addEventListener('change', (e) => aplicarFiltro(e.target.value));
-    $('#orden').addEventListener('change', (e) => { filtro.orden = e.target.value; renderCatalogo(); });
+    $('#vistaCols').addEventListener('click', (e) => { const b = e.target.closest('[data-cols]'); if (!b) return; filtro.cols = +b.dataset.cols; renderCatalogo(); });
+    $('#orden').addEventListener('change', (e) => { filtro.orden = e.target.value; filtro.mostrar = PAG; renderCatalogo(); });
     $('#btnFavoritos').addEventListener('click', () => { aplicarFiltro('favoritos'); $('#productos').scrollIntoView({ behavior: 'smooth' }); });
+
+    // Vista rápida: foto grande, tallas y compra sin salir del catálogo
+    function abrirVista(id) {
+      const m = $('#modalVista');
+      if (id === false) { m.classList.remove('visible'); m.setAttribute('aria-hidden', 'true'); document.body.style.overflow = ''; return; }
+      const p = PRODUCTOS.find(x => x.id === id); if (!p) return;
+      const d = descuento(p);
+      const msg = `Hola ZAVI, me interesa: ${p.nombre} (${dinero(p.precio)}). ¿Tienen disponible?`;
+      $('#vistaContenido').innerHTML = `
+        <div class="vista-grid">
+          <div class="vista-foto">${p.img ? `<img src="${esc(p.img)}" alt="${esc(p.nombre)}" onerror="this.style.display='none'" />` : ''}${d ? `<span class="badge">-${d}%</span>` : ''}</div>
+          <div class="vista-info">
+            <span class="producto-cat">${etiquetaCat[p.cat]}</span>
+            <h2 id="vistaTitulo">${esc(p.nombre)}</h2>
+            <div class="precios"><span class="precio-actual">${dinero(p.precio)}</span>${p.antes ? `<span class="precio-antes">${dinero(p.antes)}</span>` : ''}</div>
+            ${p.agotado ? '<p class="vista-agotado">Agotado por el momento</p>' : chipsTallas(p)}
+            ${p.agotado ? '' : `<button class="btn btn-primario btn-bloque" data-agregar="${p.id}">Agregar al carrito</button>`}
+            <a class="btn btn-secundario btn-bloque" target="_blank" rel="noopener" href="https://wa.me/${WHATSAPP}?text=${encodeURIComponent(msg)}">Consultar por WhatsApp</a>
+            <ul class="vista-notas">
+              <li>Envío a domicilio ${ENVIO > 0 ? dinero(ENVIO) : 'sin costo'}${RECOJO ? ' o recojo gratis en tienda' : ''}.</li>
+              <li>Aceptamos cambios; no hacemos devoluciones.</li>
+            </ul>
+          </div>
+        </div>`;
+      m.classList.add('visible'); m.setAttribute('aria-hidden', 'false'); document.body.style.overflow = 'hidden';
+    }
+    $('#cerrarVista').addEventListener('click', () => abrirVista(false));
+    $('#modalVista').addEventListener('click', (e) => { if (e.target.id === 'modalVista') abrirVista(false); });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { abrirVista(false); panelFiltros(false); } });
 
     /* =========================================================
        4. OFERTAS (carrusel horizontal + cuenta regresiva)
        ========================================================= */
     function renderOfertas() {
-      const ofertas = PRODUCTOS.filter(p => descuento(p) > 0 && !p.agotado).sort((a, b) => descuento(b) - descuento(a));
+      const ofertas = PRODUCTOS.filter(p => (descuento(p) > 0 || p.soloOferta) && !p.agotado).sort((a, b) => descuento(b) - descuento(a));
       $('#pistaOfertas').innerHTML = ofertas.map(tarjetaProducto).join('');
       // Sin ofertas: se oculta la sección y sus enlaces
       $('#ofertas').hidden = !ofertas.length;
@@ -1573,8 +1750,13 @@
     $('#ofPrev').addEventListener('click', () => $('#pistaOfertas').scrollBy({ left: -300, behavior: 'smooth' }));
     $('#ofNext').addEventListener('click', () => $('#pistaOfertas').scrollBy({ left: 300, behavior: 'smooth' }));
 
-    // La cuenta regresiva solo se muestra si el panel define una fecha real.
-    // Sin fecha configurada, no inventamos un vencimiento semanal.
+    // Cuenta regresiva: termina cada domingo a las 23:59:59
+    function finDeSemana() {
+      const f = new Date(); const dia = f.getDay();           // 0 = domingo
+      f.setDate(f.getDate() + (dia === 0 ? 0 : 7 - dia));
+      f.setHours(23, 59, 59, 999); return f;
+    }
+    // Fecha de fin: la que pongas en el panel o, si está vacía, el domingo
     function finOfertas() {
       const valor = String(CFG.ofertasHasta || '').trim();
       if (!valor) return null;
@@ -1616,11 +1798,11 @@
 
     function agregarAlCarrito(id, talla) {
       const prod = PRODUCTOS.find(x => x.id === id);
-      if (!prod || prod.agotado) { aviso('Este producto está agotado'); return; }
+      if (!prod || prod.agotado) { aviso('Este producto está agotado'); return false; }
       if (prod.tallas.length && !prod.tallas.includes(talla)) {
         aviso('Elige tu talla primero');         // y se resaltan los botones de talla
         $$(`.tallas[data-grupo="${id}"]`).forEach(g => { g.classList.add('falta'); setTimeout(() => g.classList.remove('falta'), 900); });
-        return;
+        return false;
       }
       const t = prod.tallas.length ? talla : '';
       const item = carrito.find(i => i.id === id && i.talla === t);
@@ -1628,6 +1810,7 @@
       guardar('zavi_carrito', carrito);
       actualizarContadores(); renderCarrito();
       aviso('Agregado al carrito ✓' + (t ? ' · talla ' + t : ''));
+      return true;
     }
 
     function cambiarCantidad(clave, delta) {
@@ -1717,10 +1900,11 @@
 
     // Delegación de eventos para botones dentro de las tarjetas y el carrito
     document.addEventListener('click', (e) => {
-      const t = e.target.closest('[data-agregar],[data-fav],[data-mas],[data-menos],[data-quitar],[data-talla]');
+      const t = e.target.closest('[data-agregar],[data-fav],[data-mas],[data-menos],[data-quitar],[data-talla],[data-vista]');
       if (!t) return;
       if (t.dataset.talla !== undefined) { elegirTalla(+t.dataset.prod, t.dataset.talla); return; }
-      if (t.dataset.agregar) { const id = +t.dataset.agregar; agregarAlCarrito(id, tallaElegida[id]); }
+      if (t.dataset.vista) { abrirVista(+t.dataset.vista); return; }
+      if (t.dataset.agregar) { const id = +t.dataset.agregar; const ok = agregarAlCarrito(id, tallaElegida[id]); if (ok && t.closest('#modalVista')) abrirVista(false); }
       if (t.dataset.fav) alternarFavorito(+t.dataset.fav);
       if (t.dataset.mas) cambiarCantidad(t.dataset.mas, 1);
       if (t.dataset.menos) cambiarCantidad(t.dataset.menos, -1);
@@ -1851,7 +2035,6 @@
        10. PAGO CON YAPE (ventana con monto, QR y número)
        ========================================================= */
     const modalPago = $('#modalPago');
-    let focoAnteriorPago = null;
 
     // Texto con el detalle del pedido (se reutiliza en el comprobante)
     function detallePedido() {
@@ -1861,12 +2044,12 @@
       }).join('\n');
     }
 
+    let focoAnteriorPago = null;
     function abrirPago(abrir) {
       if (abrir && !carrito.length) { aviso('Tu carrito está vacío'); return; }
       if (abrir) {
+        // Si el foco estaba dentro del carrito (que se cierra), se devuelve al botón del carrito
         const focoActual = document.activeElement;
-        // El carrito se cierra antes de abrir el diálogo: devolver el foco al botón
-        // del carrito evita enfocarlo dentro de un panel que ya quedó oculto.
         focoAnteriorPago = focoActual && focoActual.closest('#panelCarrito') ? $('#btnCarrito') : focoActual;
         abrirCarrito(false);
         $('#pagoMonto').textContent = dinero(totalCarrito());
@@ -1883,7 +2066,8 @@
       modalPago.classList.toggle('visible', abrir);
       modalPago.setAttribute('aria-hidden', String(!abrir));
       document.body.style.overflow = abrir ? 'hidden' : '';
-      if (abrir) $('#cerrarPago').focus();
+      // El foco se mueve tras un instante: mientras dura la transición la ventana aún figura como oculta
+      if (abrir) setTimeout(() => $('#cerrarPago').focus(), 60);
       else if (focoAnteriorPago && typeof focoAnteriorPago.focus === 'function') focoAnteriorPago.focus();
     }
     $('#btnPagar').addEventListener('click', () => abrirPago(true));
@@ -1892,11 +2076,11 @@
     document.addEventListener('keydown', (e) => {
       if (!modalPago.classList.contains('visible')) return;
       if (e.key === 'Escape') { abrirPago(false); return; }
-      if (e.key === 'Tab') {
-        const elementos = $$('button:not([disabled]), a[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled])', modalPago)
+      if (e.key === 'Tab') {                                   // el foco no se escapa de la ventana de pago
+        const els = $$('button:not([disabled]), a[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled])', modalPago)
           .filter(el => el.offsetWidth || el.offsetHeight || el === document.activeElement);
-        if (!elementos.length) return;
-        const primero = elementos[0], ultimo = elementos[elementos.length - 1];
+        if (!els.length) return;
+        const primero = els[0], ultimo = els[els.length - 1];
         if (e.shiftKey && document.activeElement === primero) { e.preventDefault(); ultimo.focus(); }
         else if (!e.shiftKey && document.activeElement === ultimo) { e.preventDefault(); primero.focus(); }
       }
@@ -2002,7 +2186,7 @@
       const R = {
         saludo: () => '¡Hola! 👋 Soy el asistente de ZAVI. Te ayudo con prendas, precios, tallas, envíos y pagos con Yape. ¿Qué estás buscando?',
         gracias: () => '¡Con gusto! 😊 Cuando quieras, agrega tus prendas al carrito y paga con Yape en un momento.',
-        pagos: () => `Puedes pagar con <strong>Yape</strong>. Agrega tus prendas al carrito, toca <em>“Ver instrucciones para pagar con Yape”</em> y verás el QR y el número <strong>${YAPE_FORMATO}</strong>. Después nos envías la captura por WhatsApp para revisar el pago y confirmar tu pedido. El monto ya incluye el envío si eliges envío a domicilio.<br>Si prefieres otro medio de pago, consúltalo con un asesor.` + botonWsp('Hola ZAVI, quiero consultar por otros medios de pago.', 'Consultar otro medio'),
+        pagos: () => `Puedes pagar con <strong>Yape</strong>. Agrega tus prendas al carrito, toca <em>“Pagar con Yape”</em> y verás el QR y el número <strong>${YAPE_FORMATO}</strong>. Después nos envías la captura por WhatsApp y confirmamos tu pedido. El monto ya incluye el envío si eliges envío a domicilio.<br>Si prefieres otro medio de pago, consúltalo con un asesor.` + botonWsp('Hola ZAVI, quiero consultar por otros medios de pago.', 'Consultar otro medio'),
         envios: () => (ENVIO > 0 ? `El envío a domicilio cuesta <strong>${dinero(ENVIO)}</strong>.` : 'El envío a domicilio no tiene costo.')
           + ' Coordinamos la entrega contigo por WhatsApp.'
           + (RECOJO ? ' También puedes <strong>recoger en tienda sin costo</strong>: Galería Megacentro, Real 1040, 2.º piso, tienda B7, Huancayo.' : '')
@@ -2036,7 +2220,7 @@
         if (tiene('ubicacion', 'direccion', 'donde', 'local', 'tienda fisica')) return responder(R.ubicacion());
         if (tiene('asesor', 'humano', 'persona', 'whatsapp', 'wasap', 'whats', 'hablar', 'llamar', 'contacto')) return responder(R.asesor());
         if (tiene('oferta', 'ofertas', 'descuento', 'descuentos', 'promo', 'promocion', 'promociones', 'rebaja', 'rebajas')) {
-          const top = PRODUCTOS.filter(p => descuento(p) > 0).sort((a, b) => descuento(b) - descuento(a));
+          const top = PRODUCTOS.filter(p => descuento(p) > 0 || p.soloOferta).sort((a, b) => descuento(b) - descuento(a));
           return responder(listaProductos(top, '¡Estas son nuestras mejores ofertas! 🔥'));
         }
         if (tiene('carrito', 'comprar', 'compro', 'pedido', 'pedir', 'como compro')) return responder(R.comoComprar());
@@ -2122,19 +2306,17 @@
     /* ---------- INICIO ---------- */
     renderCatalogo(); renderOfertas(); renderCarrito(); actualizarContadores();
   
-    /* ---------- MEJORAS DE USABILIDAD Y ACCESIBILIDAD ---------- */
+    /* ---------- Accesibilidad: imágenes rotas y menú móvil ---------- */
     (function () {
-      // Evita que imágenes externas rotas dejen huecos visuales en las tarjetas.
-      document.addEventListener('error', function (event) {
-        const img = event.target;
+      document.addEventListener('error', function (ev) {
+        const img = ev.target;
         if (img && img.tagName === 'IMG' && img.closest('.producto-img')) {
           img.closest('.producto-img').classList.add('imagen-no-disponible');
           img.alt = 'Imagen no disponible';
         }
       }, true);
-      // Mejora la navegación por teclado en el menú horizontal móvil.
       const menu = document.querySelector('.menu-categorias');
-      if (menu) menu.setAttribute('tabindex', '0');
+      if (menu) menu.setAttribute('tabindex', '0');           // se puede desplazar con el teclado
     })();
 </script>
 </body>
