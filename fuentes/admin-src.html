@@ -215,6 +215,8 @@
             <option value="ocultos">Solo ocultos</option>
           </select>
           <span class="espacio"></span>
+          <button class="btn" id="btnVarias" title="Elige varias fotos y se crea una prenda por cada una">🖼 Agregar varias con fotos</button>
+          <input type="file" id="archivosVarias" accept="image/*" multiple hidden />
           <button class="btn rojo" id="btnAgregar">＋ Agregar producto</button>
         </div>
         <p class="resumen" id="resumen"></p>
@@ -540,10 +542,39 @@
             h('div', { class: 'mover' },
               h('button', { type: 'button', class: 'btn chico', text: '▲', title: hayFiltro ? 'Quita los filtros para ordenar' : 'Subir', disabled: hayFiltro || i === 0, 'aria-label': 'Subir', onclick: () => mover(p, -1) }),
               h('button', { type: 'button', class: 'btn chico', text: '▼', title: hayFiltro ? 'Quita los filtros para ordenar' : 'Bajar', disabled: hayFiltro || i === datos.productos.length - 1, 'aria-label': 'Bajar', onclick: () => mover(p, 1) })),
+            h('button', { type: 'button', class: 'btn chico', text: 'Duplicar', onclick: () => duplicar(p) }),
             h('button', { type: 'button', class: 'btn chico peligro', text: 'Eliminar', onclick: () => eliminar(p) })));
         refrescarEstado();
         if (invalidos.has(p)) card.classList.add('invalido');
         return card;
+      }
+
+      // Copia una prenda (útil para variantes: mismo precio y tallas, otro color)
+      function duplicar(p) {
+        const id = Math.max(0, ...datos.productos.map(x => x.id)) + 1;
+        const copia = Object.assign({}, p, { id, tallas: p.tallas.slice(), nombre: p.nombre ? p.nombre + ' (copia)' : '', nuevo: true });
+        datos.productos.splice(datos.productos.indexOf(p) + 1, 0, copia);
+        renderProductos(); marcar(); toast('Prenda duplicada: cambia el nombre y la foto');
+      }
+
+      // Varias fotos de una vez: se crea una prenda por foto, con el nombre del archivo como nombre provisional
+      async function agregarVarias(files) {
+        const cat = ($('#fCat').value !== 'todas') ? $('#fCat').value : 'mujer';
+        filtros.texto = ''; filtros.cat = 'todas'; filtros.estado = 'todos';
+        $('#buscar').value = ''; $('#fCat').value = 'todas'; $('#fEstado').value = 'todos';
+        let ok = 0, mal = 0, id = Math.max(0, ...datos.productos.map(x => x.id));
+        const nuevos = [];
+        for (const f of Array.from(files)) {
+          try {
+            const img = await reducirImagen(f, { ancho: 800, recorte: true });
+            const nombre = f.name.replace(/\.[^.]+$/, '').replace(/[_-]+/g, ' ').trim().slice(0, 80);
+            nuevos.push({ id: ++id, nombre, cat, tipo: TIPOS[cat][0][0], precio: 0, antes: null, nuevo: true, agotado: false, visible: true, img, tallas: ['S', 'M', 'L', 'XL'] });
+            ok++;
+          } catch (e) { mal++; }
+        }
+        datos.productos.unshift(...nuevos);
+        renderProductos(); marcar();
+        toast(ok ? `Se agregaron ${ok} prendas. Ahora completa precio, tipo y tallas de cada una.` + (mal ? ` (${mal} archivo(s) no se pudieron leer)` : '') : 'No pude leer esas imágenes. Usa fotos JPG o PNG.', !ok);
       }
 
       function mover(p, d) {
@@ -730,6 +761,8 @@
 
       document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => mostrarTab(t.dataset.tab)));
       $('#btnAgregar').addEventListener('click', agregar);
+      $('#btnVarias').addEventListener('click', () => $('#archivosVarias').click());
+      $('#archivosVarias').addEventListener('change', (e) => { const fs = e.target.files; if (fs && fs.length) agregarVarias(fs).then(() => { e.target.value = ''; }); });
       $('#btnDescargar').addEventListener('click', descargar);
       $('#btnVista').addEventListener('click', vistaPrevia);
       $('#buscar').addEventListener('input', (e) => { filtros.texto = e.target.value; renderProductos(); });

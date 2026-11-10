@@ -21,7 +21,7 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&display=swap" rel="stylesheet" />
 
   <style>
     /* =========================================================
@@ -597,10 +597,222 @@
       .pista .producto { flex-basis: 220px; }
       .logo-eslogan { display: none; }
     }
+
+    /* =========================================================
+       PREMIUM · refinamientos de diseño (sobrescriben lo anterior)
+       Tipografía editorial, más aire, bordes finos y movimiento sutil
+       ========================================================= */
+    :root {
+      --serif: "Playfair Display", "Georgia", "Times New Roman", serif;
+      --radio: 10px;
+      --sombra: 0 18px 44px rgba(11, 11, 15, 0.12);
+      --dorado: #b08d57;
+    }
+    ::selection { background: var(--negro); color: var(--blanco); }
+    :focus-visible { outline: 2px solid var(--rojo); outline-offset: 3px; }
+    section { padding: 104px 0; }
+
+    /* Títulos en serif elegante */
+    .titulo-seccion, .slide-texto h1, .slide-texto h2 { font-family: var(--serif); font-weight: 600; letter-spacing: -0.01em; }
+    .titulo-seccion { font-size: clamp(1.9rem, 4vw, 2.8rem); line-height: 1.12; }
+    .slide-texto h1, .slide-texto h2 { font-size: clamp(2.2rem, 5.6vw, 4.2rem); line-height: 1.04; font-weight: 600; }
+    .subtitulo-seccion { font-size: 1.05rem; line-height: 1.7; }
+
+    /* Etiquetas con filete dorado */
+    .etiqueta { display: inline-flex; align-items: center; gap: 12px; font-size: 0.72rem; letter-spacing: 0.26em; color: var(--dorado); }
+    .etiqueta::before { content: ""; width: 28px; height: 1px; background: currentColor; }
+    .centrado .etiqueta::after { content: ""; width: 28px; height: 1px; background: currentColor; }
+    .slide-texto .etiqueta { color: #e3c08a; }
+
+    /* Botones: más finos, en mayúsculas pequeñas */
+    .btn { border-radius: 4px; padding: 15px 32px; font-size: 0.8rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; border-width: 1.5px; }
+    .btn-primario:hover, .btn-blanco:hover, .btn-rojo:hover, .btn-secundario:hover { transform: translateY(-2px); }
+    .btn-bloque { text-transform: uppercase; }
+
+    /* Cabecera limpia */
+    .cabecera { box-shadow: none; border-bottom: 1px solid var(--gris-borde); backdrop-filter: saturate(1.4) blur(10px); background: rgba(255,255,255,0.94); }
+
+    /* Hero cinematográfico */
+    .slide { min-height: 600px; border-radius: 0; }
+    .slide::before { background: linear-gradient(95deg, rgba(8,8,12,0.9) 0%, rgba(8,8,12,0.55) 52%, rgba(8,8,12,0.08) 100%); }
+    .slide-fondo { transform: scale(1.04); transition: transform 8s ease-out; }
+    .slide-texto { padding: 72px 64px; }
+    .slide-texto p { font-size: 1.1rem; line-height: 1.7; color: #e4e4ea; }
+    .carrusel { border-radius: var(--radio); overflow: hidden; }
+
+    /* Categorías: marco fino y título en serif */
+    .categoria { border-radius: 6px; }
+    .categoria-info h3 { font-family: var(--serif); font-size: 1.5rem; font-weight: 600; }
+    .categoria-info::after { content: "Descubrir →"; display: block; margin-top: 8px; font-size: 0.72rem; letter-spacing: 0.2em; text-transform: uppercase; opacity: 0; transform: translateY(6px); transition: var(--transicion); }
+    .categoria:hover .categoria-info::after { opacity: 0.95; transform: none; }
+
+    /* Productos: tarjeta de boutique */
+    .productos-grid { gap: 30px 24px; }
+    .producto { border-radius: 6px; background: transparent; box-shadow: none; border: 1px solid transparent; }
+    .producto:hover { transform: translateY(-4px); box-shadow: var(--sombra); border-color: var(--gris-borde); background: var(--blanco); }
+    .producto-img { border-radius: 6px; background: var(--gris-claro); }
+    .producto-info { padding: 16px 6px 8px; gap: 5px; }
+    .producto:hover .producto-info { padding-left: 14px; padding-right: 14px; }
+    .producto-info { transition: padding var(--transicion); }
+    .producto-cat { letter-spacing: 0.16em; font-size: 0.68rem; color: var(--dorado); font-weight: 600; }
+    .producto-info h3 { font-size: 1.02rem; font-weight: 600; }
+    .precio-actual { font-size: 1.15rem; font-weight: 700; }
+    .badge { border-radius: 3px; letter-spacing: 0.1em; text-transform: uppercase; font-size: 0.66rem; padding: 5px 9px; }
+    .talla { border-radius: 4px; }
+
+    /* Tarjetas de beneficios y políticas */
+    .tarjeta { border-radius: 8px; border: 1px solid var(--gris-borde); transition: transform var(--transicion), box-shadow var(--transicion), border-color var(--transicion); }
+    .tarjeta:hover { transform: translateY(-5px); box-shadow: var(--sombra); border-color: var(--dorado); }
+    .tarjeta h3 { font-family: var(--serif); font-size: 1.3rem; font-weight: 600; }
+
+    /* Footer */
+    footer { background: linear-gradient(180deg, #0b0b0f, #050507); }
+    footer h4 { font-family: var(--serif); font-size: 1.1rem; font-weight: 600; letter-spacing: 0.02em; }
+    footer a { transition: color var(--transicion), padding var(--transicion); }
+    footer li a:hover { color: #e3c08a; padding-left: 4px; }
+
+    /* Animación de entrada más suave */
+    .reveal { transition-duration: 0.9s; transition-timing-function: cubic-bezier(.2,.7,.2,1); }
+
+    @media (max-width: 900px) {
+      section { padding: 72px 0; }
+      .slide { min-height: 520px; }
+      .slide-texto { padding: 44px 26px; }
+    }
+    @media (max-width: 560px) {
+      .btn { padding: 14px 22px; letter-spacing: 0.1em; }
+      .slide-texto h1, .slide-texto h2 { font-size: 2.1rem; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .slide-fondo, .reveal, .producto, .tarjeta { transition: none !important; }
+    }
+  
+    /* =========================================================
+       ZAVI 2.0 · Pulido visual, accesibilidad y experiencia móvil
+       ========================================================= */
+    :root {
+      --zavi-ink: #111114;
+      --zavi-paper: #fbfaf8;
+      --zavi-gold: #b08d57;
+      --zavi-line: rgba(17,17,20,.10);
+      --zavi-ease: cubic-bezier(.2,.75,.25,1);
+    }
+    html { scroll-padding-top: 150px; }
+    body { background: var(--zavi-paper); }
+    ::selection { background: rgba(176,141,87,.22); color: var(--zavi-ink); }
+    a, button, input, select, textarea { -webkit-tap-highlight-color: transparent; }
+    :focus-visible { outline: 3px solid var(--zavi-gold) !important; outline-offset: 3px; }
+    .contenedor { padding-left: clamp(16px, 3vw, 28px); padding-right: clamp(16px, 3vw, 28px); }
+    .barra-promo { background: var(--zavi-ink); letter-spacing: .015em; }
+    .cabecera { box-shadow: 0 8px 28px rgba(17,17,20,.055); }
+    .cabecera-principal { min-height: 82px; }
+    .logo-img { max-height: 48px; }
+    .logo-texto { letter-spacing: .2em; }
+    .buscador input, .buscador select { transition: background .2s, border-color .2s, box-shadow .2s; }
+    .buscador:focus-within { filter: drop-shadow(0 5px 12px rgba(17,17,20,.07)); }
+    .menu-categorias a.nivel1 { letter-spacing: .015em; }
+    .slide { min-height: clamp(420px, 48vw, 590px); }
+    .slide::before { background: linear-gradient(90deg, rgba(9,9,12,.88) 0%, rgba(9,9,12,.62) 48%, rgba(9,9,12,.12) 100%); }
+    .slide-texto h1, .slide-texto h2 { text-wrap: balance; }
+    .btn { min-height: 46px; transition: transform .22s var(--zavi-ease), box-shadow .22s, background .22s, color .22s; }
+    .btn:active, .chip:active, .accion:active { transform: scale(.98); }
+    .titulo-seccion { text-wrap: balance; }
+    .catalogo { background: #f4f2ef; }
+    .filtros { align-items: flex-start; }
+    .chips { gap: 9px; }
+    .chip { min-height: 40px; padding-inline: 18px; }
+    .productos-grid { grid-template-columns: repeat(4, minmax(0,1fr)); gap: 28px 22px; }
+    .producto { border-radius: 10px; overflow: hidden; background: #fff; border: 1px solid rgba(17,17,20,.07); box-shadow: 0 4px 18px rgba(17,17,20,.035); }
+    .producto:hover { transform: translateY(-5px); box-shadow: 0 16px 36px rgba(17,17,20,.10); border-color: rgba(176,141,87,.45); }
+    .producto-img { border-radius: 0; aspect-ratio: 4 / 4.8; }
+    .producto-img img { transition: transform .65s var(--zavi-ease); }
+    .producto-info, .producto:hover .producto-info { padding: 16px 16px 18px; }
+    .producto-info h3 { min-height: 2.6em; }
+    .precio-actual { color: #17171b; }
+    .badge { border-radius: 4px; }
+    .fav { box-shadow: 0 3px 12px rgba(0,0,0,.10); }
+    .talla { min-width: 40px; }
+    .beneficios { margin-top: 56px; }
+    .tarjeta { box-shadow: 0 5px 20px rgba(17,17,20,.035); }
+    .testimonios-grid { align-items: stretch; }
+    .testimonio { border: 1px solid var(--zavi-line); box-shadow: 0 5px 20px rgba(17,17,20,.035); }
+    .formulario { border-color: var(--zavi-line); }
+    footer { border-top: 3px solid var(--zavi-gold); }
+    .skip-link {
+      position: fixed; z-index: 1000; top: 10px; left: 10px; padding: 12px 18px;
+      background: #fff; color: #111; border: 2px solid var(--zavi-gold); border-radius: 8px;
+      transform: translateY(-160%); transition: transform .2s;
+    }
+    .skip-link:focus { transform: translateY(0); }
+    .producto-img img:not([src]), .producto-img img[src=""] { display: none; }
+    @media (max-width: 1050px) {
+      .cabecera-principal { gap: 16px; }
+      .productos-grid { grid-template-columns: repeat(3, minmax(0,1fr)); }
+      .acciones .texto { display: none; }
+    }
+    @media (max-width: 760px) {
+      html { scroll-padding-top: 120px; }
+      .barra-promo .contenedor { justify-content: center; }
+      .promo-enlaces { display: none; }
+      .cabecera-principal { min-height: auto; padding-top: 12px; padding-bottom: 12px; display: grid; grid-template-columns: 1fr auto; gap: 10px 14px; }
+      .logo { grid-column: 1; grid-row: 1; }
+      .logo-img { max-width: 118px; height: 40px; }
+      .acciones { grid-column: 2; grid-row: 1; gap: 2px; }
+      .accion { padding: 7px 9px; }
+      .accion svg { width: 22px; height: 22px; }
+      .buscador { grid-column: 1 / -1; grid-row: 2; max-width: none; width: 100%; }
+      .menu-categorias { overflow-x: auto; scrollbar-width: none; }
+      .menu-categorias::-webkit-scrollbar { display: none; }
+      .menu-categorias .contenedor { width: max-content; min-width: 100%; }
+      .menu-categorias ul { gap: 2px; }
+      .menu-categorias a.nivel1 { padding: 12px 13px; font-size: .84rem; }
+      .desplegable { display: none; }
+      .slide { min-height: 470px; }
+      .slide-texto { padding: 38px 28px; }
+      .slide-texto h1, .slide-texto h2 { font-size: clamp(2rem, 8vw, 2.8rem); }
+      .flecha { width: 40px; height: 40px; }
+      .flecha.prev { left: 10px; } .flecha.next { right: 10px; }
+      .productos-grid { grid-template-columns: repeat(2, minmax(0,1fr)); gap: 18px 12px; }
+      .producto-info, .producto:hover .producto-info { padding: 12px 10px 14px; }
+      .producto-info h3 { font-size: .92rem; }
+      .precio-actual { font-size: 1.05rem; }
+      .producto-info .btn { padding: 10px 8px; font-size: .78rem; letter-spacing: 0; }
+      .talla { min-width: 32px; height: 30px; padding: 0 7px; }
+      .fav { width: 34px; height: 34px; }
+      .beneficios-grid, .testimonios-grid { grid-template-columns: 1fr; gap: 14px; }
+      .categorias-grid { grid-template-columns: repeat(2, minmax(0,1fr)); gap: 12px; }
+      .nosotros-grid, .contacto-grid { grid-template-columns: 1fr; gap: 28px; }
+      .newsletter-caja { grid-template-columns: 1fr; padding: 32px 22px; gap: 20px; }
+      .newsletter-msg { grid-column: 1; }
+      .newsletter-form { flex-direction: column; }
+      .newsletter-form .btn { width: 100%; }
+      .politicas-grid { grid-template-columns: 1fr; }
+      .cifras { flex-wrap: wrap; gap: 22px; }
+    }
+    @media (max-width: 390px) {
+      .contenedor { padding-left: 14px; padding-right: 14px; }
+      .logo-texto { font-size: 1.05rem; padding: 6px 10px; }
+      .logo-eslogan { font-size: .64rem; }
+      .slide-texto { padding: 34px 22px; }
+      .slide-botones { gap: 8px; }
+      .slide-botones .btn { width: 100%; }
+      .cuenta-regresiva { gap: 5px; }
+      .cuenta-regresiva div { min-width: 52px; padding: 8px 5px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+    }
+
+  
+    .producto-img.imagen-no-disponible { display:grid; place-items:center; background:linear-gradient(135deg,#efede8,#dedbd4); }
+    .producto-img.imagen-no-disponible::after { content:"ZAVI · Imagen no disponible"; color:#77716a; font-size:.78rem; letter-spacing:.08em; text-align:center; padding:12px; }
   </style>
 </head>
 
 <body>
+
+  <a class="skip-link" href="#contenido-principal">Saltar al contenido</a>
+
 
   <!-- ================= BARRA DE PROMOCIONES ================= -->
   <div class="barra-promo">
@@ -694,7 +906,7 @@
     </nav>
   </header>
 
-  <main>
+  <main id="contenido-principal">
 
     <!-- ================= 1. HERO (carrusel) ================= -->
     <section class="hero" id="inicio" style="padding-bottom:0">
@@ -782,19 +994,19 @@
         </div>
         <div class="categorias-grid">
           <a href="#productos" class="categoria reveal" data-filtro="mujer">
-            <img src="https://images.unsplash.com/photo-1434389677669-e08b4cac3105?auto=format&fit=crop&w=700&q=80" alt="Ropa de mujer" loading="lazy" onerror="this.style.display='none'" />
+            <img src="https://images.unsplash.com/photo-1434389677669-e08b4cac3105?auto=format&fit=crop&w=700&q=80" alt="Ropa de mujer" loading="lazy" decoding="async" onerror="this.style.display='none'" />
             <div class="categoria-info"><h3>Mujer</h3><span>Ver prendas</span></div>
           </a>
           <a href="#productos" class="categoria reveal retraso-1" data-filtro="hombre">
-            <img src="https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?auto=format&fit=crop&w=700&q=80" alt="Ropa de hombre" loading="lazy" onerror="this.style.display='none'" />
+            <img src="https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?auto=format&fit=crop&w=700&q=80" alt="Ropa de hombre" loading="lazy" decoding="async" onerror="this.style.display='none'" />
             <div class="categoria-info"><h3>Hombre</h3><span>Ver prendas</span></div>
           </a>
           <a href="#productos" class="categoria reveal retraso-2" data-filtro="accesorios">
-            <img src="https://images.unsplash.com/photo-1584917865442-de89df76afd3?auto=format&fit=crop&w=700&q=80" alt="Accesorios" loading="lazy" onerror="this.style.display='none'" />
+            <img src="https://images.unsplash.com/photo-1584917865442-de89df76afd3?auto=format&fit=crop&w=700&q=80" alt="Accesorios" loading="lazy" decoding="async" onerror="this.style.display='none'" />
             <div class="categoria-info"><h3>Accesorios</h3><span>Ver productos</span></div>
           </a>
           <a href="#contacto" class="categoria reveal retraso-3" id="catMayor">
-            <img src="https://images.unsplash.com/photo-1445205170230-053b83016050?auto=format&fit=crop&w=700&q=80" alt="Compra por mayor" loading="lazy" onerror="this.style.display='none'" />
+            <img src="https://images.unsplash.com/photo-1445205170230-053b83016050?auto=format&fit=crop&w=700&q=80" alt="Compra por mayor" loading="lazy" decoding="async" onerror="this.style.display='none'" />
             <div class="categoria-info"><h3>Por mayor</h3><span>Precios especiales</span></div>
           </a>
         </div>
@@ -870,44 +1082,45 @@
             <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>Atención personalizada y cercana</li>
             <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>Opciones para compra individual o por mayor</li>
           </ul>
-          <!-- Cifras de ejemplo: reemplázalas por las reales de tu negocio -->
           <div class="cifras">
-            <div><strong>+500</strong><span>Prendas disponibles</span></div>
-            <div><strong>+2,000</strong><span>Clientes atendidos</span></div>
-            <div><strong>100%</strong><span>Importado</span></div>
+            <div><strong>1 a 1</strong><span>Atención cercana</span></div>
+            <div><strong>Yape</strong><span>Pago práctico</span></div>
+            <div><strong>ZAVI</strong><span>Tu estilo importa</span></div>
           </div>
         </div>
         <div class="nosotros-imagen reveal retraso-1">
-          <img src="https://images.unsplash.com/photo-1523381210434-271e8be1f52b?auto=format&fit=crop&w=1000&q=80" alt="Prendas de ropa dobladas y organizadas" loading="lazy" onerror="this.style.display='none'" />
+          <img src="https://images.unsplash.com/photo-1523381210434-271e8be1f52b?auto=format&fit=crop&w=1000&q=80" alt="Prendas de ropa dobladas y organizadas" loading="lazy" decoding="async" onerror="this.style.display='none'" />
         </div>
       </div>
     </section>
 
-    <!-- ================= 4. TESTIMONIOS ================= -->
+    <!-- ================= OPINIONES DE CLIENTES ================= -->
     <section class="testimonios" id="testimonios">
       <div class="contenedor">
         <div class="centrado reveal">
-          <span class="etiqueta">Testimonios</span>
-          <h2 class="titulo-seccion">Lo que dicen nuestros clientes</h2>
-          <p class="subtitulo-seccion">Opiniones de personas que ya vistieron con nosotros.</p>
+          <span class="etiqueta">Comunidad ZAVI</span>
+          <h2 class="titulo-seccion">Tu estilo, tu opinión</h2>
+          <p class="subtitulo-seccion">Estamos construyendo nuestra comunidad. Cuéntanos cómo fue tu experiencia y ayúdanos a mejorar.</p>
         </div>
-        <!-- IMPORTANTE: reemplaza estos textos de ejemplo por testimonios reales de tus clientes -->
         <div class="testimonios-grid">
           <article class="testimonio reveal">
-            <div class="estrellas">★★★★★</div>
-            <blockquote>“La calidad de las prendas superó mis expectativas. Llegó todo bien empacado y tal como en las fotos.”</blockquote>
-            <div class="autor"><div class="avatar">M</div><div><strong>Nombre del cliente</strong><span>Cliente verificado</span></div></div>
+            <div class="icono"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3l2.7 5.5 6.1.9-4.4 4.3 1 6.1-5.4-2.9-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/></svg></div>
+            <h3>¿Te gustó tu compra?</h3>
+            <p>Tu opinión nos ayuda a seleccionar mejores prendas y ofrecer una atención cada vez mejor.</p>
           </article>
           <article class="testimonio reveal retraso-1">
-            <div class="estrellas">★★★★★</div>
-            <blockquote>“Me asesoraron con la talla y el estilo. Se nota que les importa que quedes conforme con tu compra.”</blockquote>
-            <div class="autor"><div class="avatar">C</div><div><strong>Nombre del cliente</strong><span>Cliente verificado</span></div></div>
+            <div class="icono"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 11.5a8.4 8.4 0 01-9 8.4 9.4 9.4 0 01-4-.9L3 21l1.5-4.2a8.1 8.1 0 01-1.5-4.8A8.5 8.5 0 0112 3.5h.5a8.4 8.4 0 018.5 8z"/></svg></div>
+            <h3>¿Necesitas asesoría?</h3>
+            <p>Escríbenos para consultar tallas, disponibilidad, combinaciones o detalles de cada producto.</p>
           </article>
           <article class="testimonio reveal retraso-2">
-            <div class="estrellas">★★★★★</div>
-            <blockquote>“Compré por mayor para mi negocio y el trato fue excelente. Sin duda volveré a comprar.”</blockquote>
-            <div class="autor"><div class="avatar">R</div><div><strong>Nombre del cliente</strong><span>Cliente verificado</span></div></div>
+            <div class="icono"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 7h18M5 7l1 13h12l1-13M9 7V4h6v3"/></svg></div>
+            <h3>¿Compras por mayor?</h3>
+            <p>Conversemos sobre disponibilidad y precios especiales para tu negocio.</p>
           </article>
+        </div>
+        <div class="centrado" style="margin-top:30px">
+          <a class="btn btn-primario" href="https://wa.me/51965604689?text=Hola%20ZAVI%2C%20quiero%20compartir%20mi%20experiencia." target="_blank" rel="noopener">Compartir mi experiencia</a>
         </div>
       </div>
     </section>
@@ -1083,7 +1296,7 @@
       <div class="resumen-linea"><span>Subtotal</span><span id="carritoSubtotal">S/ 0.00</span></div>
       <div class="resumen-linea"><span>Envío</span><span id="carritoEnvio">—</span></div>
       <div class="subtotal"><span>Total</span><span id="carritoTotal">S/ 0.00</span></div>
-      <button class="btn btn-rojo btn-bloque" id="btnPagar">Pagar con Yape</button>
+      <button class="btn btn-rojo btn-bloque" id="btnPagar">Ver instrucciones para pagar con Yape</button>
       <button class="btn btn-secundario btn-bloque" id="btnPedido">Pedir por WhatsApp</button>
       <button class="vaciar" id="btnVaciar">Vaciar carrito</button>
       <p class="nota-pie">Coordinaremos contigo la entrega por WhatsApp. Aceptamos cambios; no hacemos devoluciones.</p>
@@ -1096,8 +1309,9 @@
   <div class="modal" id="modalPago" role="dialog" aria-modal="true" aria-labelledby="pagoTitulo" aria-hidden="true">
     <div class="modal-caja">
       <button class="cerrar modal-cerrar" id="cerrarPago" aria-label="Cerrar">×</button>
-      <h2 id="pagoTitulo">Paga con Yape</h2>
-      <p class="pago-sub">Escanea el QR o yapea al número y luego envíanos la captura para confirmar tu pedido.</p>
+      <h2 id="pagoTitulo">Pago mediante Yape</h2>
+      <p class="pago-sub">Escanea el QR o yapea al número indicado. Después, envíanos el comprobante por WhatsApp para que podamos revisar y confirmar tu pedido.</p>
+      <p class="pago-sub"><strong>Importante:</strong> esta web no procesa ni verifica pagos automáticamente. Verifica el destinatario y el monto en la aplicación de Yape antes de enviar el dinero.</p>
       <div class="monto" id="pagoMonto">S/ 0.00</div>
       <p class="pago-detalle" id="pagoDetalle"></p>
 
@@ -1272,7 +1486,7 @@
             <button class="fav ${esFav ? 'activo' : ''}" data-fav="${p.id}" aria-label="Marcar favorito" aria-pressed="${esFav}">
               <svg viewBox="0 0 24 24"><path d="M20.8 5.6a5.2 5.2 0 00-7.4 0L12 7l-1.4-1.4a5.2 5.2 0 00-7.4 7.4L12 21.8l8.8-8.8a5.2 5.2 0 000-7.4z"/></svg>
             </button>
-            ${p.img ? `<img src="${esc(p.img)}" alt="${esc(p.nombre)}" loading="lazy" onerror="this.style.display='none'" />` : ''}
+            ${p.img ? `<img src="${esc(p.img)}" alt="${esc(p.nombre)}" loading="lazy" decoding="async" onerror="this.style.display='none'" />` : ''}
           </div>
           <div class="producto-info">
             <span class="producto-cat">${etiquetaCat[p.cat]}</span>
@@ -1359,19 +1573,23 @@
     $('#ofPrev').addEventListener('click', () => $('#pistaOfertas').scrollBy({ left: -300, behavior: 'smooth' }));
     $('#ofNext').addEventListener('click', () => $('#pistaOfertas').scrollBy({ left: 300, behavior: 'smooth' }));
 
-    // Cuenta regresiva: termina cada domingo a las 23:59:59
-    function finDeSemana() {
-      const f = new Date(); const dia = f.getDay();           // 0 = domingo
-      f.setDate(f.getDate() + (dia === 0 ? 0 : 7 - dia));
-      f.setHours(23, 59, 59, 999); return f;
-    }
-    // Fecha de fin: la que pongas en el panel o, si está vacía, el domingo
+    // La cuenta regresiva solo se muestra si el panel define una fecha real.
+    // Sin fecha configurada, no inventamos un vencimiento semanal.
     function finOfertas() {
-      if (CFG.ofertasHasta) { const d = new Date(CFG.ofertasHasta); if (!isNaN(d) && d > new Date()) return d; }
-      return finDeSemana();
+      const valor = String(CFG.ofertasHasta || '').trim();
+      if (!valor) return null;
+      // Las fechas YYYY-MM-DD se interpretan en hora local para evitar desfases UTC.
+      const d = /^\d{4}-\d{2}-\d{2}$/.test(valor)
+        ? new Date(valor + 'T23:59:59')
+        : new Date(valor);
+      return !isNaN(d.getTime()) && d > new Date() ? d : null;
     }
     function actualizarCuenta() {
-      let resto = Math.max(0, finOfertas() - new Date());
+      const fin = finOfertas();
+      const reloj = $('#cuenta');
+      if (!fin) { reloj.hidden = true; return; }
+      reloj.hidden = false;
+      let resto = Math.max(0, fin - new Date());
       const dd = Math.floor(resto / 864e5); resto -= dd * 864e5;
       const hh = Math.floor(resto / 36e5); resto -= hh * 36e5;
       const mm = Math.floor(resto / 6e4); resto -= mm * 6e4;
@@ -1380,7 +1598,8 @@
       $('#cdDias').textContent = p2(dd); $('#cdHoras').textContent = p2(hh);
       $('#cdMin').textContent = p2(mm); $('#cdSeg').textContent = p2(ss);
     }
-    actualizarCuenta(); setInterval(actualizarCuenta, 1000);
+    actualizarCuenta();
+    if (finOfertas()) setInterval(actualizarCuenta, 1000);
 
     /* =========================================================
        5. FAVORITOS Y CARRITO
@@ -1632,6 +1851,7 @@
        10. PAGO CON YAPE (ventana con monto, QR y número)
        ========================================================= */
     const modalPago = $('#modalPago');
+    let focoAnteriorPago = null;
 
     // Texto con el detalle del pedido (se reutiliza en el comprobante)
     function detallePedido() {
@@ -1644,6 +1864,10 @@
     function abrirPago(abrir) {
       if (abrir && !carrito.length) { aviso('Tu carrito está vacío'); return; }
       if (abrir) {
+        const focoActual = document.activeElement;
+        // El carrito se cierra antes de abrir el diálogo: devolver el foco al botón
+        // del carrito evita enfocarlo dentro de un panel que ya quedó oculto.
+        focoAnteriorPago = focoActual && focoActual.closest('#panelCarrito') ? $('#btnCarrito') : focoActual;
         abrirCarrito(false);
         $('#pagoMonto').textContent = dinero(totalCarrito());
         $('#pagoDetalle').textContent = entrega === 'envio' ? (ENVIO > 0 ? `Incluye envío a domicilio de ${dinero(ENVIO)}` : 'Envío a domicilio sin costo') : 'Recojo en tienda · sin costo de envío';
@@ -1659,11 +1883,24 @@
       modalPago.classList.toggle('visible', abrir);
       modalPago.setAttribute('aria-hidden', String(!abrir));
       document.body.style.overflow = abrir ? 'hidden' : '';
+      if (abrir) $('#cerrarPago').focus();
+      else if (focoAnteriorPago && typeof focoAnteriorPago.focus === 'function') focoAnteriorPago.focus();
     }
     $('#btnPagar').addEventListener('click', () => abrirPago(true));
     $('#cerrarPago').addEventListener('click', () => abrirPago(false));
     modalPago.addEventListener('click', (e) => { if (e.target === modalPago) abrirPago(false); });
-    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') abrirPago(false); });
+    document.addEventListener('keydown', (e) => {
+      if (!modalPago.classList.contains('visible')) return;
+      if (e.key === 'Escape') { abrirPago(false); return; }
+      if (e.key === 'Tab') {
+        const elementos = $$('button:not([disabled]), a[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled])', modalPago)
+          .filter(el => el.offsetWidth || el.offsetHeight || el === document.activeElement);
+        if (!elementos.length) return;
+        const primero = elementos[0], ultimo = elementos[elementos.length - 1];
+        if (e.shiftKey && document.activeElement === primero) { e.preventDefault(); ultimo.focus(); }
+        else if (!e.shiftKey && document.activeElement === ultimo) { e.preventDefault(); primero.focus(); }
+      }
+    });
 
     // Copiar el número de Yape
     $('#btnCopiar').addEventListener('click', () => {
@@ -1765,7 +2002,7 @@
       const R = {
         saludo: () => '¡Hola! 👋 Soy el asistente de ZAVI. Te ayudo con prendas, precios, tallas, envíos y pagos con Yape. ¿Qué estás buscando?',
         gracias: () => '¡Con gusto! 😊 Cuando quieras, agrega tus prendas al carrito y paga con Yape en un momento.',
-        pagos: () => `Puedes pagar con <strong>Yape</strong>. Agrega tus prendas al carrito, toca <em>“Pagar con Yape”</em> y verás el QR y el número <strong>${YAPE_FORMATO}</strong>. Después nos envías la captura por WhatsApp y confirmamos tu pedido. El monto ya incluye el envío si eliges envío a domicilio.<br>Si prefieres otro medio de pago, consúltalo con un asesor.` + botonWsp('Hola ZAVI, quiero consultar por otros medios de pago.', 'Consultar otro medio'),
+        pagos: () => `Puedes pagar con <strong>Yape</strong>. Agrega tus prendas al carrito, toca <em>“Ver instrucciones para pagar con Yape”</em> y verás el QR y el número <strong>${YAPE_FORMATO}</strong>. Después nos envías la captura por WhatsApp para revisar el pago y confirmar tu pedido. El monto ya incluye el envío si eliges envío a domicilio.<br>Si prefieres otro medio de pago, consúltalo con un asesor.` + botonWsp('Hola ZAVI, quiero consultar por otros medios de pago.', 'Consultar otro medio'),
         envios: () => (ENVIO > 0 ? `El envío a domicilio cuesta <strong>${dinero(ENVIO)}</strong>.` : 'El envío a domicilio no tiene costo.')
           + ' Coordinamos la entrega contigo por WhatsApp.'
           + (RECOJO ? ' También puedes <strong>recoger en tienda sin costo</strong>: Galería Megacentro, Real 1040, 2.º piso, tienda B7, Huancayo.' : '')
@@ -1884,6 +2121,21 @@
 
     /* ---------- INICIO ---------- */
     renderCatalogo(); renderOfertas(); renderCarrito(); actualizarContadores();
-  </script>
+  
+    /* ---------- MEJORAS DE USABILIDAD Y ACCESIBILIDAD ---------- */
+    (function () {
+      // Evita que imágenes externas rotas dejen huecos visuales en las tarjetas.
+      document.addEventListener('error', function (event) {
+        const img = event.target;
+        if (img && img.tagName === 'IMG' && img.closest('.producto-img')) {
+          img.closest('.producto-img').classList.add('imagen-no-disponible');
+          img.alt = 'Imagen no disponible';
+        }
+      }, true);
+      // Mejora la navegación por teclado en el menú horizontal móvil.
+      const menu = document.querySelector('.menu-categorias');
+      if (menu) menu.setAttribute('tabindex', '0');
+    })();
+</script>
 </body>
 </html>
