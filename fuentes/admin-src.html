@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Panel ZAVI | Administra tu tienda</title>
+  <meta name="robots" content="noindex,nofollow" />
+
+  <style>
+    /* =========================================================
+       PANEL DE ADMINISTRACIÓN DE ZAVI
+       Un solo archivo: se abre en el navegador, sin instalar nada.
+       ========================================================= */
+    :root {
+      --negro: #0b0b0f; --negro2: #17171d; --rojo: #b3121b;
+      --gris: #f5f5f6; --borde: #e3e3e8; --texto: #5c5c66;
+      --verde: #1b7f3b; --blanco: #fff; --radio: 14px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    [hidden] { display: none !important; }
+    body {
+      font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      background: var(--gris); color: var(--negro); line-height: 1.5; -webkit-font-smoothing: antialiased;
+    }
+    button, input, select { font-family: inherit; font-size: 1rem; color: inherit; }
+    button { cursor: pointer; }
+    small { color: var(--texto); font-size: 0.8rem; }
+
+    /* ---------- Barra superior ---------- */
+    .top {
+      position: sticky; top: 0; z-index: 50; background: var(--negro); color: var(--blanco);
+      display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap; padding: 12px 24px;
+    }
+    .marca { display: flex; align-items: center; gap: 12px; }
+    .marca img { height: 42px; width: auto; max-width: 120px; border-radius: 8px; object-fit: contain; background: var(--blanco); padding: 3px 6px; }
+    .marca strong { display: block; font-size: 1.05rem; line-height: 1.2; }
+    .marca span { font-size: 0.8rem; color: #b9b9c3; }
+    .acciones-top { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .estado { font-size: 0.8rem; padding: 6px 12px; border-radius: 999px; background: #25252d; color: #c9c9d1; }
+    .estado.pendiente { background: #fff3cd; color: #7a5b00; font-weight: 600; }
+
+    /* ---------- Botones ---------- */
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      padding: 11px 22px; border-radius: 999px; border: 2px solid var(--negro); background: transparent;
+      font-weight: 600; font-size: 0.92rem; transition: transform 0.2s, background 0.2s, color 0.2s; white-space: nowrap;
+    }
+    .btn:hover:not(:disabled) { transform: translateY(-2px); }
+    .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+    .btn.primario { background: var(--negro); color: var(--blanco); }
+    .btn.rojo { background: var(--rojo); border-color: var(--rojo); color: var(--blanco); }
+    .btn.chico { padding: 7px 14px; font-size: 0.82rem; }
+    .top .btn { border-color: var(--blanco); color: var(--blanco); }
+    .top .btn.primario { background: var(--blanco); color: var(--negro); }
+    .btn.peligro { border-color: #c62828; color: #c62828; }
+    .btn.peligro:hover:not(:disabled) { background: #c62828; color: var(--blanco); }
+
+    main { max-width: 1240px; margin: 0 auto; padding: 24px; }
+
+    /* ---------- Bienvenida / abrir archivo ---------- */
+    .bienvenida { background: var(--blanco); border-radius: 22px; padding: 44px 32px; text-align: center; max-width: 720px; margin: 28px auto; box-shadow: 0 10px 30px rgba(0,0,0,0.06); }
+    .bienvenida h1 { font-size: 1.7rem; letter-spacing: -0.02em; margin-bottom: 8px; }
+    .bienvenida > p { color: var(--texto); margin-bottom: 24px; }
+    .zona { display: block; border: 2.5px dashed #b9b9c3; border-radius: 18px; padding: 38px 20px; cursor: pointer; transition: 0.2s; background: var(--gris); }
+    .zona:hover, .zona.sobre { border-color: var(--negro); background: #ececf0; }
+    .zona strong { display: block; font-size: 1.1rem; margin-bottom: 4px; }
+    .zona input { display: none; }
+    .pasos { text-align: left; margin: 26px auto 0; max-width: 520px; color: var(--texto); display: grid; gap: 8px; padding-left: 20px; }
+    .error-archivo { margin-top: 16px; padding: 12px 16px; border-radius: 10px; background: #fdecea; color: #8a1c1c; font-weight: 500; }
+
+    /* ---------- Avisos ---------- */
+    .aviso-caja { padding: 14px 18px; border-radius: 12px; margin-bottom: 16px; font-size: 0.93rem; }
+    .aviso-caja.ok { background: #e8f5e9; color: #1b5e20; }
+    .aviso-caja.info { background: #e8f0fe; color: #1a3d8f; display: flex; gap: 12px; align-items: center; justify-content: space-between; flex-wrap: wrap; }
+    .aviso-caja.mal { background: #fdecea; color: #8a1c1c; }
+    .aviso-caja ul { margin: 6px 0 0 20px; }
+    .aviso-caja .fila { display: flex; gap: 8px; }
+
+    /* ---------- Pestañas ---------- */
+    .tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 18px; border-bottom: 2px solid var(--borde); }
+    .tab { background: none; border: 0; padding: 12px 20px; font-weight: 600; color: var(--texto); border-bottom: 3px solid transparent; margin-bottom: -2px; }
+    .tab.activa { color: var(--negro); border-bottom-color: var(--rojo); }
+
+    /* ---------- Herramientas de productos ---------- */
+    .herramientas { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-bottom: 8px; }
+    .herramientas input[type="search"], .herramientas select {
+      padding: 10px 14px; border: 1.5px solid var(--borde); border-radius: 999px; background: var(--blanco); font-size: 0.92rem;
+    }
+    .herramientas input[type="search"] { flex: 1; min-width: 180px; max-width: 320px; }
+    .herramientas .espacio { flex: 1; }
+    .resumen { color: var(--texto); font-size: 0.88rem; margin-bottom: 16px; }
+
+    /* ---------- Tarjetas de producto ---------- */
+    .lista { display: grid; grid-template-columns: repeat(auto-fill, minmax(330px, 1fr)); gap: 18px; }
+    .prod { background: var(--blanco); border-radius: var(--radio); padding: 16px; border: 2px solid transparent; box-shadow: 0 2px 10px rgba(0,0,0,0.05); display: grid; gap: 12px; }
+    .prod.invalido { border-color: #c62828; }
+    .prod.apagado { opacity: 0.62; }
+    .prod-cab { display: grid; grid-template-columns: 104px 1fr; gap: 14px; align-items: start; }
+    .foto { aspect-ratio: 4 / 5; border-radius: 10px; overflow: hidden; background: #e7e7ec; display: grid; place-items: center; }
+    .foto img { width: 100%; height: 100%; object-fit: cover; }
+    .sin-foto { font-size: 0.75rem; color: var(--texto); text-align: center; padding: 6px; }
+    .prod-cab .btn { margin-top: 8px; }
+    .campo { display: grid; gap: 5px; font-size: 0.82rem; font-weight: 600; }
+    .campo > span { color: var(--negro); }
+    .campo input[type="text"], .campo input[type="email"], .campo input[type="datetime-local"], .campo select {
+      width: 100%; padding: 10px 12px; border: 1.5px solid var(--borde); border-radius: 10px; background: var(--blanco); font-weight: 400; font-size: 0.95rem;
+    }
+    .campo input:focus, .campo select:focus { outline: none; border-color: var(--negro); box-shadow: 0 0 0 3px rgba(11,11,15,0.08); }
+    .fila2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .dinero { position: relative; }
+    .dinero b { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); font-weight: 600; color: var(--texto); font-size: 0.9rem; pointer-events: none; }
+    .dinero input { padding-left: 36px !important; }
+    .presets { display: flex; gap: 6px; flex-wrap: wrap; }
+    .desc { font-size: 0.8rem; min-height: 1.2em; color: var(--verde); font-weight: 600; }
+    .desc.aviso { color: #9a6700; }
+    .checks { display: flex; gap: 14px; flex-wrap: wrap; }
+    .check { display: inline-flex; align-items: center; gap: 7px; font-size: 0.86rem; font-weight: 500; cursor: pointer; }
+    .check input { width: 18px; height: 18px; accent-color: var(--negro); }
+    .acciones-prod { display: flex; gap: 8px; justify-content: space-between; align-items: center; border-top: 1px solid var(--borde); padding-top: 12px; }
+    .acciones-prod .mover { display: flex; gap: 6px; }
+    .vacio { grid-column: 1 / -1; text-align: center; padding: 50px 20px; color: var(--texto); background: var(--blanco); border-radius: var(--radio); }
+
+    /* ---------- Ajustes ---------- */
+    .bloque { background: var(--blanco); border-radius: var(--radio); padding: 24px; margin-bottom: 18px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); display: grid; gap: 16px; max-width: 760px; }
+    .bloque h2 { font-size: 1.1rem; }
+    .prefijo { display: flex; align-items: center; border: 1.5px solid var(--borde); border-radius: 10px; overflow: hidden; background: var(--blanco); }
+    .prefijo b { padding: 10px 12px; background: var(--gris); color: var(--texto); font-weight: 600; }
+    .campo .prefijo input { border: 0; border-radius: 0; box-shadow: none; }
+    .qr-fila { display: flex; gap: 18px; align-items: center; flex-wrap: wrap; }
+    .qr-prev { width: 150px; height: 160px; border: 1.5px solid var(--borde); border-radius: 12px; overflow: hidden; display: grid; place-items: center; background: var(--gris); font-size: 0.8rem; color: var(--texto); }
+    .qr-prev img { width: 100%; height: 100%; object-fit: contain; }
+    .fila-input { display: flex; gap: 8px; align-items: center; }
+    .fila-input input { flex: 1; }
+
+    /* ---------- Aviso flotante ---------- */
+    .toast { position: fixed; left: 50%; bottom: 26px; z-index: 100; transform: translate(-50%, 24px); background: var(--negro); color: var(--blanco); padding: 12px 22px; border-radius: 999px; font-size: 0.9rem; opacity: 0; pointer-events: none; transition: 0.3s; max-width: 92vw; text-align: center; }
+    .toast.visible { opacity: 1; transform: translate(-50%, 0); }
+    .toast.malo { background: #c62828; }
+
+    @media (max-width: 640px) {
+      .top { padding: 10px 14px; }
+      main { padding: 14px; }
+      .lista { grid-template-columns: 1fr; }
+      .bienvenida { padding: 30px 18px; }
+      .marca span { display: none; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ================= BARRA SUPERIOR ================= -->
+  <header class="top">
+    <div class="marca">
+      <img src="{{LOGO}}" alt="ZAVI" />
+      <div><strong>Panel de ZAVI</strong><span>Cambia productos y precios sin tocar código</span></div>
+    </div>
+    <div class="acciones-top">
+      <span class="estado" id="estado">Sin cambios</span>
+      <button class="btn" id="btnVista" disabled>Ver cómo queda</button>
+      <button class="btn primario" id="btnDescargar" disabled>Descargar tienda actualizada</button>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- ================= PASO 1: ABRIR LA TIENDA ================= -->
+    <section class="bienvenida" id="paso1">
+      <h1>Abre tu tienda para empezar</h1>
+      <p>Elige el archivo <strong>tienda-zavi.html</strong> de tu computadora. Todo se hace en tu equipo: nada se sube a internet.</p>
+      <label class="zona" id="zona">
+        <input type="file" id="archivo" accept=".html,text/html" />
+        <strong>Toca aquí para elegir tu tienda</strong>
+        <small>o arrastra el archivo hasta este recuadro</small>
+      </label>
+      <p class="error-archivo" id="errorArchivo" hidden></p>
+      <ol class="pasos">
+        <li>Abre tu tienda aquí.</li>
+        <li>Cambia precios, fotos, ofertas y datos con los formularios.</li>
+        <li>Toca <strong>Descargar tienda actualizada</strong> y reemplaza tu archivo (o súbelo a tu página si ya está publicada).</li>
+      </ol>
+    </section>
+
+    <!-- ================= EDITOR ================= -->
+    <section id="editor" hidden>
+
+      <div class="aviso-caja info" id="borrador" hidden>
+        <span id="borradorTexto"></span>
+        <span class="fila">
+          <button class="btn chico primario" id="btnRecuperar">Recuperar</button>
+          <button class="btn chico" id="btnDescartar">Descartar</button>
+        </span>
+      </div>
+      <div class="aviso-caja mal" id="errores" hidden></div>
+      <div class="aviso-caja ok" id="exito" hidden></div>
+
+      <nav class="tabs" aria-label="Secciones del panel">
+        <button class="tab activa" data-tab="productos">Productos</button>
+        <button class="tab" data-tab="ajustes">Datos de la tienda</button>
+      </nav>
+
+      <!-- ---------- Pestaña: productos ---------- -->
+      <div id="tab-productos">
+        <div class="herramientas">
+          <input type="search" id="buscar" placeholder="Buscar producto..." aria-label="Buscar producto" />
+          <select id="fCat" aria-label="Filtrar por categoría">
+            <option value="todas">Todas las categorías</option>
+            <option value="mujer">Mujer</option>
+            <option value="hombre">Hombre</option>
+            <option value="accesorios">Accesorios</option>
+          </select>
+          <select id="fEstado" aria-label="Filtrar por estado">
+            <option value="todos">Todos los estados</option>
+            <option value="agotados">Solo agotados</option>
+            <option value="ocultos">Solo ocultos</option>
+          </select>
+          <span class="espacio"></span>
+          <button class="btn" id="btnVarias" title="Elige varias fotos y se crea una prenda por cada una">🖼 Agregar varias con fotos</button>
+          <input type="file" id="archivosVarias" accept="image/*" multiple hidden />
+          <button class="btn rojo" id="btnAgregar">＋ Agregar producto</button>
+        </div>
+        <p class="resumen" id="resumen"></p>
+        <div class="lista" id="lista"></div>
+      </div>
+
+      <!-- ---------- Pestaña: ajustes ---------- -->
+      <div id="tab-ajustes" hidden>
+
+        <div class="bloque">
+          <h2>WhatsApp y pagos con Yape</h2>
+          <label class="campo"><span>WhatsApp de ventas</span>
+            <div class="prefijo"><b>+51</b><input type="text" id="cfgWsp" inputmode="numeric" maxlength="14" placeholder="965 604 689" /></div>
+            <small>Aquí llegan los pedidos del carrito y del chat.</small>
+          </label>
+          <label class="campo"><span>Número de Yape</span>
+            <div class="prefijo"><b>+51</b><input type="text" id="cfgYape" inputmode="numeric" maxlength="14" placeholder="965 604 689" /></div>
+          </label>
+          <div class="campo"><span>Código QR de Yape</span>
+            <div class="qr-fila">
+              <div class="qr-prev" id="qrPrev"></div>
+              <div>
+                <button class="btn chico" id="btnQR" type="button">Cambiar QR</button>
+                <input type="file" id="archivoQR" accept="image/*" hidden />
+                <p><small>Sube una captura de tu QR desde la app de Yape. Después de cambiarlo, escanéalo con otro celular para comprobar que apunta a tu cuenta.</small></p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="bloque">
+          <h2>Envíos y cambios</h2>
+          <label class="campo"><span>Costo del envío a domicilio</span>
+            <div class="prefijo"><b>S/</b><input type="text" id="cfgEnvio" inputmode="decimal" placeholder="5.00" /></div>
+            <small>Se suma al total del carrito y al monto de Yape. Pon 0 si el envío es gratis.</small>
+          </label>
+          <label class="check"><input type="checkbox" id="cfgRecojo" /> Ofrecer recojo en tienda sin costo (Galería Megacentro)</label>
+          <label class="campo"><span>Condiciones de cambio (opcional)</span><input type="text" id="cfgCondiciones" maxlength="160" placeholder="Ej: Cambios dentro de los 7 días, con etiqueta y sin uso." /><small>Se muestra en la sección “Envíos y cambios” y en el chat. La página ya indica que aceptas cambios y no haces devoluciones.</small></label>
+        </div>
+
+        <div class="bloque">
+          <h2>Contacto y horario</h2>
+          <label class="campo"><span>Teléfono de contacto</span><input type="text" id="cfgTel" placeholder="+51 954 335 410" /><small>Escríbelo tal como quieres que se vea en la página.</small></label>
+          <label class="campo"><span>Correo</span><input type="email" id="cfgCorreo" placeholder="tucorreo@gmail.com" /></label>
+          <label class="campo"><span>Horario de atención</span><input type="text" id="cfgHorario" placeholder="Lun – Sáb: 9:00 a 20:00 · Dom: 10:00 a 15:00" /><small>Separa cada línea con el signo “·”.</small></label>
+          <label class="campo"><span>Dirección del formulario de contacto (opcional)</span><input type="text" id="cfgForm" inputmode="url" placeholder="https://formspree.io/f/xxxxxxxx" /><small>Si la dejas vacía, el formulario abre WhatsApp con el mensaje ya escrito. Con una dirección de Formspree (cuenta gratis en formspree.io), los mensajes te llegan por correo.</small></label>
+          <label class="campo"><span>Enlace del Libro de reclamaciones (opcional)</span><input type="text" id="cfgReclamos" inputmode="url" placeholder="https://..." /><small>Si lo dejas vacío, el enlace no se muestra en el pie de página.</small></label>
+        </div>
+
+        <div class="bloque">
+          <h2>Avisos de la barra superior</h2>
+          <p><small>Mensajes que van rotando arriba de la página. Deja vacío el que no quieras usar.</small></p>
+          <label class="campo"><span>Aviso 1</span><input type="text" id="cfgPromo0" maxlength="110" /></label>
+          <label class="campo"><span>Aviso 2</span><input type="text" id="cfgPromo1" maxlength="110" /></label>
+          <label class="campo"><span>Aviso 3</span><input type="text" id="cfgPromo2" maxlength="110" /></label>
+        </div>
+
+        <div class="bloque">
+          <h2>Ofertas de la semana</h2>
+          <p><small>Un producto aparece en Ofertas cuando le pones un <strong>precio anterior</strong> mayor al precio actual.</small></p>
+          <div class="campo"><span>Las ofertas terminan el</span>
+            <div class="fila-input"><input type="datetime-local" id="cfgOfertaHasta" /><button class="btn chico" id="btnLimpiarFecha" type="button">Quitar fecha</button></div>
+            <small>Si lo dejas vacío, el contador se reinicia cada domingo a medianoche.</small>
+          </div>
+        </div>
+
+        <div class="bloque">
+          <h2>Dirección web y vista previa al compartir</h2>
+          <p><small>Cuando publiques tu página, escribe aquí su dirección. Así, al compartir el enlace por WhatsApp o Facebook aparecerán tu logo y tu descripción, y Google identifica mejor tu tienda.</small></p>
+          <label class="campo"><span>Dirección de tu página</span><input type="text" id="cfgSitio" inputmode="url" placeholder="https://zavi.pe" /></label>
+          <p><small>Al publicar, sube también el archivo <strong>zavi-compartir.jpg</strong> junto a tu tienda y cambia el nombre de <strong>tienda-zavi.html</strong> a <strong>index.html</strong>. Si lo dejas vacío, el enlace se comparte solo con texto.</small></p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div class="toast" id="toast" role="status"></div>
+
+  <script>
+    /* =========================================================
+       LÓGICA DEL PANEL
+       1) Abre tu tienda y lee el bloque de datos "zavi-datos".
+       2) Editas con formularios (todo queda en memoria).
+       3) Al descargar, se reescribe ese bloque y se guarda la tienda nueva.
+       ========================================================= */
+    (function () {
+      'use strict';
+
+      const $ = (s, r = document) => r.querySelector(s);
+      const RE_BLOQUE = /(<script type="application\/json" id="zavi-datos">)([\s\S]*?)(<\/script>)/;
+      const RE_SEO = /(\x3C!--SEO-WEB-->)([\s\S]*?)(\x3C!--\/SEO-WEB-->)/;   // zona de la tienda donde van las etiquetas con la dirección web
+      function bloqueSeo(url) {
+        if (!url) return '\n  ';
+        return `\n  <link rel="canonical" href="${url}/" />\n  <meta property="og:url" content="${url}/" />\n  <meta property="og:image" content="${url}/zavi-compartir.jpg" />\n  <meta property="og:image:width" content="1200" />\n  <meta property="og:image:height" content="630" />\n  <meta name="twitter:image" content="${url}/zavi-compartir.jpg" />\n  `;
+      }
+      const CLAVE_BORRADOR = 'zavi_panel_borrador';
+
+      const CATS = { mujer: 'Mujer', hombre: 'Hombre', accesorios: 'Accesorios' };
+      // Tipos por categoría (coinciden con los del menú de la tienda)
+      const TIPOS = {
+        mujer: [['vestidos', 'Vestidos'], ['polos', 'Polos y blusas'], ['pantalones', 'Jeans y pantalones'], ['casacas', 'Casacas']],
+        hombre: [['polos', 'Polos y camisas'], ['pantalones', 'Jeans y pantalones'], ['casacas', 'Casacas']],
+        accesorios: [['bolsos', 'Bolsos y mochilas'], ['relojes', 'Relojes']]
+      };
+
+      let datos = null;          // Datos que se están editando
+      let htmlOriginal = '';     // HTML completo de la tienda abierta
+      let sucio = false;         // ¿Hay cambios sin descargar?
+      let timerBorrador = null;
+      const invalidos = new Set();
+      const filtros = { texto: '', cat: 'todas', estado: 'todos' };
+
+      /* ---------- Utilidades ---------- */
+      // Crea elementos sin usar innerHTML (así nada de lo que escribas se interpreta como código)
+      function h(tag, props = {}, ...hijos) {
+        const el = document.createElement(tag);
+        for (const [k, v] of Object.entries(props)) {
+          if (k === 'class') el.className = v;
+          else if (k === 'text') el.textContent = v;
+          else if (k.startsWith('on')) el.addEventListener(k.slice(2), v);
+          else if (v === true) el.setAttribute(k, '');
+          else if (v !== false && v != null) el.setAttribute(k, v);
+        }
+        hijos.flat().forEach(c => { if (c != null) el.append(c.nodeType ? c : document.createTextNode(c)); });
+        return el;
+      }
+      const dinero = n => 'S/ ' + Number(n).toFixed(2);
+      function num(v) {
+        const n = parseFloat(String(v).replace(',', '.'));
+        return isFinite(n) && n > 0 ? Math.round(n * 100) / 100 : 0;
+      }
+      // "S, M, L" o "S M L" -> ['S','M','L'] (sin repetidos, máximo 12)
+      function parseTallas(v) {
+        const partes = /[,;]/.test(v) ? v.split(/[,;]+/) : v.split(/\s+/);
+        return [...new Set(partes.map(x => x.trim().slice(0, 8)).filter(Boolean))].slice(0, 12);
+      }
+      let timerToast;
+      function toast(msg, malo) {
+        const t = $('#toast');
+        t.textContent = msg; t.className = 'toast visible' + (malo ? ' malo' : '');
+        clearTimeout(timerToast); timerToast = setTimeout(() => t.classList.remove('visible'), 3400);
+      }
+
+      // Reduce y comprime una foto en el navegador. Con recorte, la deja en formato 4:5 como en la tienda.
+      function reducirImagen(file, { ancho, recorte, calidad = 0.82 }) {
+        return new Promise((ok, fallo) => {
+          const url = URL.createObjectURL(file), img = new Image();
+          img.onload = () => {
+            let sx = 0, sy = 0, sw = img.width, sh = img.height;
+            if (recorte) {
+              const ar = 4 / 5;
+              if (sw / sh > ar) { sw = sh * ar; sx = (img.width - sw) / 2; } else { sh = sw / ar; sy = (img.height - sh) / 2; }
+            }
+            const w = Math.min(ancho, sw), hh = Math.round(w * sh / sw);
+            const c = document.createElement('canvas'); c.width = Math.round(w); c.height = hh;
+            const ctx = c.getContext('2d'); ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, c.width, c.height);
+            ctx.drawImage(img, sx, sy, sw, sh, 0, 0, c.width, c.height);
+            URL.revokeObjectURL(url); ok(c.toDataURL('image/jpeg', calidad));
+          };
+          img.onerror = () => { URL.revokeObjectURL(url); fallo(new Error('imagen')); };
+          img.src = url;
+        });
+      }
+
+      /* ---------- Datos ---------- */
+      function normalizar(d) {
+        d = d && typeof d === 'object' ? d : {};
+        const c = d.config = d.config && typeof d.config === 'object' ? d.config : {};
+        ['whatsapp', 'yapeNumero', 'telefono', 'correo', 'horario', 'ofertasHasta', 'qr', 'sitioUrl', 'formEndpoint', 'reclamosUrl', 'condicionesCambio'].forEach(k => { if (typeof c[k] !== 'string') c[k] = ''; });
+        c.envioCosto = (typeof c.envioCosto === 'number' && c.envioCosto >= 0) ? c.envioCosto : 5;
+        c.recojoTienda = c.recojoTienda !== false;
+        c.promos = Array.isArray(c.promos) ? c.promos.slice(0, 3).map(String) : [];
+        while (c.promos.length < 3) c.promos.push('');
+        d.productos = (Array.isArray(d.productos) ? d.productos : []).map((p, i) => ({
+          id: Number.isFinite(+p.id) ? +p.id : i + 1,
+          nombre: String(p.nombre || ''),
+          cat: CATS[p.cat] ? p.cat : 'mujer',
+          tipo: String(p.tipo || ''),
+          precio: Number(p.precio) > 0 ? Number(p.precio) : 0,
+          antes: Number(p.antes) > 0 ? Number(p.antes) : null,
+          nuevo: !!p.nuevo, agotado: !!p.agotado, visible: p.visible !== false,
+          img: String(p.img || ''),
+          tallas: Array.isArray(p.tallas) ? p.tallas.map(x => String(x).trim()).filter(Boolean).slice(0, 12) : []
+        }));
+        d.productos.forEach(p => { if (!TIPOS[p.cat].some(t => t[0] === p.tipo)) p.tipo = TIPOS[p.cat][0][0]; });
+        d.version = 1;
+        return d;
+      }
+      // Copia limpia: solo los campos que la tienda entiende
+      function exportarDatos() {
+        const c = datos.config;
+        return {
+          version: 1,
+          config: {
+            whatsapp: c.whatsapp, yapeNumero: c.yapeNumero, telefono: c.telefono.trim(), correo: c.correo.trim(),
+            horario: c.horario.trim(), promos: c.promos.map(t => t.trim()), ofertasHasta: c.ofertasHasta, qr: c.qr,
+            sitioUrl: c.sitioUrl.trim().replace(/\/+$/, ''),
+            formEndpoint: c.formEndpoint.trim(), reclamosUrl: c.reclamosUrl.trim(),
+            envioCosto: Number(c.envioCosto), recojoTienda: !!c.recojoTienda, condicionesCambio: c.condicionesCambio.trim()
+          },
+          productos: datos.productos.map(p => ({
+            id: p.id, nombre: p.nombre.trim(), cat: p.cat, tipo: p.tipo, precio: p.precio, antes: p.antes || null,
+            nuevo: p.nuevo, agotado: p.agotado, visible: p.visible, img: p.img, tallas: p.tallas
+          }))
+        };
+      }
+      function construirHtml() {
+        const exp = exportarDatos();
+        // "<" se escribe como < para que ningún texto pueda cerrar el bloque de datos
+        const json = JSON.stringify(exp).replace(/</g, '\\u003c');
+        let html = htmlOriginal.replace(RE_BLOQUE, (m, a, b, c) => a + json + c);          // con función, para que "$" en los textos no cause problemas
+        html = html.replace(RE_SEO, (m, a, b, c) => a + bloqueSeo(exp.config.sitioUrl) + c);
+        return html;
+      }
+
+      /* ---------- Estado, resumen y borrador ---------- */
+      function resumen() {
+        const ps = datos.productos;
+        const ag = ps.filter(p => p.agotado).length, oc = ps.filter(p => !p.visible).length;
+        const of = ps.filter(p => p.antes && p.antes > p.precio && p.visible && !p.agotado).length;
+        $('#resumen').textContent = `${ps.length} producto${ps.length === 1 ? '' : 's'} · ${of} en oferta · ${ag} agotado${ag === 1 ? '' : 's'} · ${oc} oculto${oc === 1 ? '' : 's'}`;
+      }
+      function marcar() {
+        sucio = true;
+        const e = $('#estado'); e.textContent = 'Cambios sin descargar'; e.classList.add('pendiente');
+        $('#exito').hidden = true;
+        resumen();
+        clearTimeout(timerBorrador); timerBorrador = setTimeout(guardarBorrador, 700);
+      }
+      function guardarBorrador() { try { localStorage.setItem(CLAVE_BORRADOR, JSON.stringify({ t: Date.now(), datos: exportarDatos() })); } catch (e) { /* sin espacio: se ignora */ } }
+      function leerBorrador() { try { return JSON.parse(localStorage.getItem(CLAVE_BORRADOR)); } catch (e) { return null; } }
+      function borrarBorrador() { try { localStorage.removeItem(CLAVE_BORRADOR); } catch (e) { /* nada */ } }
+      window.addEventListener('beforeunload', (e) => { if (sucio) { e.preventDefault(); e.returnValue = ''; } });
+
+      /* ---------- Tarjeta de producto ---------- */
+      function tarjeta(p) {
+        const card = h('article', { class: 'prod' });
+        const refrescarEstado = () => {
+          card.classList.toggle('apagado', !p.visible || p.agotado);
+        };
+
+        // Foto
+        const foto = h('div', { class: 'foto' });
+        const pintarFoto = () => foto.replaceChildren(p.img ? h('img', { src: p.img, alt: 'Foto de ' + p.nombre }) : h('span', { class: 'sin-foto', text: 'Sin foto' }));
+        pintarFoto();
+        const archivo = h('input', {
+          type: 'file', accept: 'image/*', hidden: true,
+          onchange: async (e) => {
+            const f = e.target.files[0]; e.target.value = ''; if (!f) return;
+            try { p.img = await reducirImagen(f, { ancho: 800, recorte: true }); pintarFoto(); marcar(); toast('Foto actualizada'); }
+            catch (err) { toast('No pude leer esa imagen. Prueba con una foto JPG o PNG.', true); }
+          }
+        });
+        const btnFoto = h('button', { type: 'button', class: 'btn chico', text: 'Cambiar foto', onclick: () => archivo.click() });
+
+        // Nombre
+        const nombre = h('input', {
+          type: 'text', value: p.nombre, maxlength: 80, placeholder: 'Ej: Polo básico de algodón',
+          oninput: (e) => { p.nombre = e.target.value; invalidos.delete(p); card.classList.remove('invalido'); marcar(); }
+        });
+
+        // Categoría y tipo
+        const selTipo = h('select', { onchange: (e) => { p.tipo = e.target.value; marcar(); } });
+        const llenarTipos = () => { selTipo.replaceChildren(...TIPOS[p.cat].map(([v, t]) => h('option', { value: v, selected: v === p.tipo }, t))); };
+        llenarTipos();
+        const selCat = h('select', {
+          onchange: (e) => { p.cat = e.target.value; p.tipo = TIPOS[p.cat][0][0]; llenarTipos(); marcar(); }
+        }, Object.entries(CATS).map(([v, t]) => h('option', { value: v, selected: v === p.cat }, t)));
+
+        // Precios
+        const desc = h('div', { class: 'desc' });
+        const actualizarDesc = () => {
+          if (p.antes && p.antes > p.precio && p.precio > 0) {
+            desc.className = 'desc'; desc.textContent = `-${Math.round((1 - p.precio / p.antes) * 100)}% · aparece en Ofertas`;
+          } else if (p.antes) {
+            desc.className = 'desc aviso'; desc.textContent = 'El precio anterior debe ser mayor para mostrarse como oferta';
+          } else { desc.className = 'desc'; desc.textContent = ''; }
+        };
+        const precio = h('input', {
+          type: 'text', inputmode: 'decimal', value: p.precio ? p.precio.toFixed(2) : '', placeholder: '0.00',
+          oninput: (e) => { p.precio = num(e.target.value); invalidos.delete(p); card.classList.remove('invalido'); actualizarDesc(); marcar(); }
+        });
+        const antes = h('input', {
+          type: 'text', inputmode: 'decimal', value: p.antes ? p.antes.toFixed(2) : '', placeholder: 'Opcional',
+          oninput: (e) => { p.antes = num(e.target.value) || null; actualizarDesc(); marcar(); }
+        });
+        actualizarDesc();
+
+        // Tallas (si queda vacío, el producto se vende sin elegir talla)
+        const tallas = h('input', {
+          type: 'text', value: p.tallas.join(', '), maxlength: 60, placeholder: 'Ej: S, M, L, XL',
+          oninput: (e) => { p.tallas = parseTallas(e.target.value); marcar(); }
+        });
+        const atajo = (texto, lista) => h('button', { type: 'button', class: 'btn chico', text: texto, onclick: () => { p.tallas = lista.slice(); tallas.value = lista.join(', '); marcar(); } });
+        const atajos = h('div', { class: 'presets' }, atajo('Ropa: S a XL', ['S', 'M', 'L', 'XL']), atajo('Jeans: 28 a 36', ['28', '30', '32', '34', '36']), atajo('Sin talla', []));
+
+        // Casillas
+        const casilla = (texto, valor, alCambiar) => h('label', { class: 'check' },
+          h('input', { type: 'checkbox', checked: valor, onchange: (e) => { alCambiar(e.target.checked); refrescarEstado(); marcar(); } }), texto);
+
+        const hayFiltro = filtros.texto || filtros.cat !== 'todas' || filtros.estado !== 'todos';
+        const i = datos.productos.indexOf(p);
+
+        card.append(
+          h('div', { class: 'prod-cab' },
+            h('div', {}, foto, btnFoto, archivo),
+            h('div', { style: 'display:grid;gap:10px' },
+              h('label', { class: 'campo' }, h('span', { text: 'Nombre del producto' }), nombre),
+              h('div', { class: 'fila2' },
+                h('label', { class: 'campo' }, h('span', { text: 'Categoría' }), selCat),
+                h('label', { class: 'campo' }, h('span', { text: 'Tipo' }), selTipo)))),
+          h('div', { class: 'fila2' },
+            h('label', { class: 'campo' }, h('span', { text: 'Precio actual' }), h('div', { class: 'dinero' }, h('b', { text: 'S/' }), precio)),
+            h('label', { class: 'campo' }, h('span', { text: 'Precio anterior (oferta)' }), h('div', { class: 'dinero' }, h('b', { text: 'S/' }), antes))),
+          desc,
+          h('label', { class: 'campo' }, h('span', { text: 'Tallas disponibles' }), tallas),
+          atajos,
+          h('div', { class: 'checks' },
+            casilla('Etiqueta “Nuevo”', p.nuevo, v => { p.nuevo = v; }),
+            casilla('Agotado', p.agotado, v => { p.agotado = v; }),
+            casilla('Mostrar en la tienda', p.visible, v => { p.visible = v; })),
+          h('div', { class: 'acciones-prod' },
+            h('div', { class: 'mover' },
+              h('button', { type: 'button', class: 'btn chico', text: '▲', title: hayFiltro ? 'Quita los filtros para ordenar' : 'Subir', disabled: hayFiltro || i === 0, 'aria-label': 'Subir', onclick: () => mover(p, -1) }),
+              h('button', { type: 'button', class: 'btn chico', text: '▼', title: hayFiltro ? 'Quita los filtros para ordenar' : 'Bajar', disabled: hayFiltro || i === datos.productos.length - 1, 'aria-label': 'Bajar', onclick: () => mover(p, 1) })),
+            h('button', { type: 'button', class: 'btn chico', text: 'Duplicar', onclick: () => duplicar(p) }),
+            h('button', { type: 'button', class: 'btn chico peligro', text: 'Eliminar', onclick: () => eliminar(p) })));
+        refrescarEstado();
+        if (invalidos.has(p)) card.classList.add('invalido');
+        return card;
+      }
+
+      // Copia una prenda (útil para variantes: mismo precio y tallas, otro color)
+      function duplicar(p) {
+        const id = Math.max(0, ...datos.productos.map(x => x.id)) + 1;
+        const copia = Object.assign({}, p, { id, tallas: p.tallas.slice(), nombre: p.nombre ? p.nombre + ' (copia)' : '', nuevo: true });
+        datos.productos.splice(datos.productos.indexOf(p) + 1, 0, copia);
+        renderProductos(); marcar(); toast('Prenda duplicada: cambia el nombre y la foto');
+      }
+
+      // Varias fotos de una vez: se crea una prenda por foto, con el nombre del archivo como nombre provisional
+      async function agregarVarias(files) {
+        const cat = ($('#fCat').value !== 'todas') ? $('#fCat').value : 'mujer';
+        filtros.texto = ''; filtros.cat = 'todas'; filtros.estado = 'todos';
+        $('#buscar').value = ''; $('#fCat').value = 'todas'; $('#fEstado').value = 'todos';
+        let ok = 0, mal = 0, id = Math.max(0, ...datos.productos.map(x => x.id));
+        const nuevos = [];
+        for (const f of Array.from(files)) {
+          try {
+            const img = await reducirImagen(f, { ancho: 800, recorte: true });
+            const nombre = f.name.replace(/\.[^.]+$/, '').replace(/[_-]+/g, ' ').trim().slice(0, 80);
+            nuevos.push({ id: ++id, nombre, cat, tipo: TIPOS[cat][0][0], precio: 0, antes: null, nuevo: true, agotado: false, visible: true, img, tallas: ['S', 'M', 'L', 'XL'] });
+            ok++;
+          } catch (e) { mal++; }
+        }
+        datos.productos.unshift(...nuevos);
+        renderProductos(); marcar();
+        toast(ok ? `Se agregaron ${ok} prendas. Ahora completa precio, tipo y tallas de cada una.` + (mal ? ` (${mal} archivo(s) no se pudieron leer)` : '') : 'No pude leer esas imágenes. Usa fotos JPG o PNG.', !ok);
+      }
+
+      function mover(p, d) {
+        const a = datos.productos, i = a.indexOf(p), j = i + d;
+        if (j < 0 || j >= a.length) return;
+        [a[i], a[j]] = [a[j], a[i]];
+        renderProductos(); marcar();
+      }
+      function eliminar(p) {
+        const n = p.nombre.trim() || 'este producto';
+        if (!confirm(`¿Eliminar “${n}”? Esta acción se aplica al descargar la tienda.`)) return;
+        datos.productos.splice(datos.productos.indexOf(p), 1);
+        invalidos.delete(p);
+        renderProductos(); marcar(); toast('Producto eliminado');
+      }
+      function agregar() {
+        filtros.texto = ''; filtros.cat = 'todas'; filtros.estado = 'todos';
+        $('#buscar').value = ''; $('#fCat').value = 'todas'; $('#fEstado').value = 'todos';
+        const id = Math.max(0, ...datos.productos.map(p => p.id)) + 1;
+        const p = { id, nombre: '', cat: 'mujer', tipo: 'polos', precio: 0, antes: null, nuevo: true, agotado: false, visible: true, img: '', tallas: ['S', 'M', 'L', 'XL'] };
+        datos.productos.unshift(p);
+        renderProductos(); marcar();
+        const primero = $('#lista .prod input[type="text"]');
+        if (primero) { primero.scrollIntoView({ behavior: 'smooth', block: 'center' }); primero.focus(); }
+      }
+
+      function renderProductos() {
+        const t = filtros.texto.trim().toLowerCase();
+        const lista = datos.productos.filter(p =>
+          (!t || p.nombre.toLowerCase().includes(t)) &&
+          (filtros.cat === 'todas' || p.cat === filtros.cat) &&
+          (filtros.estado === 'todos' || (filtros.estado === 'agotados' && p.agotado) || (filtros.estado === 'ocultos' && !p.visible)));
+        $('#lista').replaceChildren(...(lista.length ? lista.map(tarjeta) : [h('p', { class: 'vacio', text: datos.productos.length ? 'No hay productos con esos filtros.' : 'Aún no hay productos. Toca “Agregar producto”.' })]));
+        resumen();
+      }
+
+      /* ---------- Ajustes ---------- */
+      function renderAjustes() {
+        const c = datos.config;
+        $('#cfgWsp').value = c.whatsapp.replace(/^51(?=\d{9}$)/, '');
+        $('#cfgYape').value = c.yapeNumero;
+        $('#cfgTel').value = c.telefono;
+        $('#cfgCorreo').value = c.correo;
+        $('#cfgHorario').value = c.horario;
+        c.promos.forEach((t, i) => { $('#cfgPromo' + i).value = t; });
+        $('#cfgOfertaHasta').value = c.ofertasHasta;
+        $('#cfgSitio').value = c.sitioUrl;
+        $('#cfgEnvio').value = c.envioCosto;
+        $('#cfgRecojo').checked = c.recojoTienda;
+        $('#cfgCondiciones').value = c.condicionesCambio;
+        $('#cfgForm').value = c.formEndpoint;
+        $('#cfgReclamos').value = c.reclamosUrl;
+        pintarQR();
+      }
+      function pintarQR() {
+        const c = datos.config;
+        $('#qrPrev').replaceChildren(c.qr ? h('img', { src: c.qr, alt: 'QR de Yape' }) : h('span', { text: 'Sin QR' }));
+      }
+      function enlazarAjustes() {
+        const c = () => datos.config;
+        $('#cfgWsp').addEventListener('input', (e) => {
+          const d = e.target.value.replace(/\D/g, ''); c().whatsapp = d.length === 9 ? '51' + d : d; marcar();
+        });
+        $('#cfgYape').addEventListener('input', (e) => {
+          let d = e.target.value.replace(/\D/g, ''); if (d.length === 11 && d.startsWith('51')) d = d.slice(2);
+          c().yapeNumero = d; marcar();
+        });
+        [['cfgTel', 'telefono'], ['cfgCorreo', 'correo'], ['cfgHorario', 'horario'], ['cfgOfertaHasta', 'ofertasHasta'], ['cfgSitio', 'sitioUrl'], ['cfgForm', 'formEndpoint'], ['cfgReclamos', 'reclamosUrl'], ['cfgCondiciones', 'condicionesCambio']].forEach(([id, k]) => {
+          $('#' + id).addEventListener('input', (e) => { c()[k] = e.target.value; marcar(); });
+        });
+        [0, 1, 2].forEach(i => $('#cfgPromo' + i).addEventListener('input', (e) => { c().promos[i] = e.target.value; marcar(); }));
+        $('#cfgEnvio').addEventListener('input', (e) => {
+          const n = parseFloat(e.target.value.replace(',', '.'));
+          c().envioCosto = e.target.value.trim() !== '' && isFinite(n) && n >= 0 ? Math.round(n * 100) / 100 : NaN; marcar();
+        });
+        $('#cfgRecojo').addEventListener('change', (e) => { c().recojoTienda = e.target.checked; marcar(); });
+        $('#btnLimpiarFecha').addEventListener('click', () => { c().ofertasHasta = ''; $('#cfgOfertaHasta').value = ''; marcar(); });
+        $('#btnQR').addEventListener('click', () => $('#archivoQR').click());
+        $('#archivoQR').addEventListener('change', async (e) => {
+          const f = e.target.files[0]; e.target.value = ''; if (!f) return;
+          try { c().qr = await reducirImagen(f, { ancho: 700, recorte: false, calidad: 0.92 }); pintarQR(); marcar(); toast('QR actualizado. Pruébalo con otro celular.'); }
+          catch (err) { toast('No pude leer esa imagen. Prueba con una captura JPG o PNG.', true); }
+        });
+      }
+
+      /* ---------- Validación, descarga y vista previa ---------- */
+      function validar() {
+        invalidos.clear();
+        const e = [], c = datos.config;
+        datos.productos.forEach((p, i) => {
+          const n = p.nombre.trim() || 'Producto ' + (i + 1);
+          if (!p.nombre.trim()) { e.push(`Producto ${i + 1}: escribe el nombre.`); invalidos.add(p); }
+          if (!(p.precio > 0)) { e.push(`“${n}”: escribe el precio.`); invalidos.add(p); }
+        });
+        if (!(typeof c.envioCosto === 'number' && c.envioCosto >= 0)) e.push('El costo de envío debe ser un número (ej: 5). Pon 0 si es gratis.');
+        if (!/^51\d{9}$/.test(c.whatsapp)) e.push('WhatsApp: escribe los 9 dígitos de tu número (ej: 965 604 689).');
+        if (!/^\d{9}$/.test(c.yapeNumero)) e.push('Yape: escribe los 9 dígitos de tu número.');
+        [['formEndpoint', 'La dirección del formulario'], ['reclamosUrl', 'El enlace del Libro de reclamaciones']].forEach(([k, n]) => {
+          if (c[k].trim() && !/^https:\/\/[^\s"<>]+$/.test(c[k].trim())) e.push(n + ' debe empezar con https://');
+        });
+        if (c.sitioUrl.trim() && !/^https:\/\/[^\s"<>]+$/.test(c.sitioUrl.trim())) e.push('La dirección web debe empezar con https:// (ej: https://zavi.pe).');
+        if (c.correo.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(c.correo.trim())) e.push('El correo no parece válido.');
+        return e;
+      }
+      function mostrarErrores(lista) {
+        const caja = $('#errores');
+        if (!lista.length) { caja.hidden = true; return; }
+        caja.replaceChildren(h('strong', { text: 'Revisa esto antes de descargar:' }), h('ul', {}, lista.map(t => h('li', { text: t }))));
+        caja.hidden = false; caja.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+      function verificar() {
+        const errores = validar();
+        mostrarErrores(errores);
+        renderProductos();
+        if (errores.length) { toast('Hay datos por completar', true); return false; }
+        return true;
+      }
+
+      function descargar() {
+        if (!verificar()) return;
+        const html = construirHtml();
+        const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+        const a = h('a', { href: URL.createObjectURL(blob), download: 'tienda-zavi.html' });
+        document.body.append(a); a.click(); a.remove();
+        setTimeout(() => URL.revokeObjectURL(a.href), 5000);
+        const mb = (blob.size / 1048576).toFixed(1);
+        sucio = false; borrarBorrador();
+        const e = $('#estado'); e.textContent = 'Descargado ✓'; e.classList.remove('pendiente');
+        const ex = $('#exito');
+        ex.replaceChildren(
+          h('strong', { text: `Listo: tienda-zavi.html (${mb} MB)` }),
+          h('div', { text: 'Reemplaza tu archivo anterior por este. Si tu página ya está publicada en internet, sube este archivo en el mismo lugar.' }),
+          blob.size > 8 * 1048576 ? h('div', { text: 'Ojo: pesa bastante y puede cargar lento. Usa fotos más livianas o menos productos con foto grande.' }) : null);
+        ex.hidden = false;
+        ex.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+      function vistaPrevia() {
+        if (!verificar()) return;
+        const blob = new Blob([construirHtml()], { type: 'text/html;charset=utf-8' });
+        window.open(URL.createObjectURL(blob), '_blank');
+      }
+
+      /* ---------- Abrir la tienda ---------- */
+      async function abrirArchivo(f) {
+        if (!f) return;
+        const err = $('#errorArchivo'); err.hidden = true;
+        try {
+          const texto = await f.text();
+          const m = RE_BLOQUE.exec(texto);
+          if (!m) throw new Error('sin-datos');
+          const d = normalizar(JSON.parse(m[2]));
+          htmlOriginal = texto; datos = d; sucio = false; invalidos.clear();
+          $('#paso1').hidden = true; $('#editor').hidden = false;
+          $('#btnDescargar').disabled = false; $('#btnVista').disabled = false;
+          const e = $('#estado'); e.textContent = 'Sin cambios'; e.classList.remove('pendiente');
+          renderProductos(); renderAjustes(); mostrarTab('productos');
+          ofrecerBorrador();
+          toast('Tienda abierta ✓');
+        } catch (ex) {
+          err.textContent = 'No pude leer ese archivo. Elige el archivo tienda-zavi.html más reciente (el que incluye este panel).';
+          err.hidden = false;
+        }
+      }
+      function ofrecerBorrador() {
+        const b = leerBorrador(), caja = $('#borrador');
+        caja.hidden = true;
+        if (!b || !b.datos || JSON.stringify(b.datos) === JSON.stringify(exportarDatos())) return;
+        $('#borradorTexto').textContent = 'Encontré cambios sin descargar del ' + new Date(b.t).toLocaleString('es-PE') + '. ¿Quieres recuperarlos?';
+        caja.hidden = false;
+      }
+
+      function mostrarTab(nombre) {
+        document.querySelectorAll('.tab').forEach(t => t.classList.toggle('activa', t.dataset.tab === nombre));
+        $('#tab-productos').hidden = nombre !== 'productos';
+        $('#tab-ajustes').hidden = nombre !== 'ajustes';
+      }
+
+      /* ---------- Eventos ---------- */
+      $('#archivo').addEventListener('change', (e) => abrirArchivo(e.target.files[0]));
+      const zona = $('#zona');
+      ['dragover', 'dragenter'].forEach(ev => zona.addEventListener(ev, (e) => { e.preventDefault(); zona.classList.add('sobre'); }));
+      ['dragleave', 'drop'].forEach(ev => zona.addEventListener(ev, () => zona.classList.remove('sobre')));
+      zona.addEventListener('drop', (e) => { e.preventDefault(); abrirArchivo(e.dataTransfer.files[0]); });
+
+      document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => mostrarTab(t.dataset.tab)));
+      $('#btnAgregar').addEventListener('click', agregar);
+      $('#btnVarias').addEventListener('click', () => $('#archivosVarias').click());
+      $('#archivosVarias').addEventListener('change', (e) => { const fs = e.target.files; if (fs && fs.length) agregarVarias(fs).then(() => { e.target.value = ''; }); });
+      $('#btnDescargar').addEventListener('click', descargar);
+      $('#btnVista').addEventListener('click', vistaPrevia);
+      $('#buscar').addEventListener('input', (e) => { filtros.texto = e.target.value; renderProductos(); });
+      $('#fCat').addEventListener('change', (e) => { filtros.cat = e.target.value; renderProductos(); });
+      $('#fEstado').addEventListener('change', (e) => { filtros.estado = e.target.value; renderProductos(); });
+      $('#btnRecuperar').addEventListener('click', () => {
+        const b = leerBorrador(); if (!b) return;
+        datos = normalizar(b.datos); renderProductos(); renderAjustes(); $('#borrador').hidden = true; marcar(); toast('Cambios recuperados');
+      });
+      $('#btnDescartar').addEventListener('click', () => { borrarBorrador(); $('#borrador').hidden = true; });
+
+      enlazarAjustes();
+    })();
+  </script>
+</body>
+</html>
