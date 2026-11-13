@@ -6,46 +6,58 @@ Sitio estático de un solo archivo (HTML + CSS + JS), sin servidor ni dependenci
 ## Estructura
 - `index.html` – la tienda completa (logo, QR de Yape y productos incrustados).
 - `zavi-compartir.jpg` – imagen de vista previa al compartir el enlace.
-- `panel-local/admin-zavi.html` – panel para editar productos, precios, fotos, tallas, ofertas y envío sin tocar código. Se abre en tu computadora; carga `index.html`, editas y descargas la tienda actualizada (renómbrala a `index.html` y súbela).
-- `fuentes/` – archivos fuente y script de construcción (solo para desarrollo).
+- `panel-local/admin-zavi.html` – panel de administración, **solo para usar en tu PC (sin contraseña, no se sube a GitHub)**.
+- `fuentes/` – fuentes y script de construcción (solo para desarrollo).
 
 ## Publicar con GitHub Pages
 1. Sube todo el contenido a un repositorio (público para el plan gratuito).
-2. Settings → Pages → Source: *Deploy from a branch* → rama `main`, carpeta `/ (root)`.
-3. Tu dirección será `https://TU-USUARIO.github.io/NOMBRE-REPO/`.
-4. Abre el panel, pestaña **Ajustes**, escribe esa dirección en "Dirección web" y descarga la tienda; reemplaza `index.html` en GitHub. Así se completan las etiquetas para compartir y Google.
+2. Settings → Pages → *Deploy from a branch* → rama `main`, carpeta `/ (root)`.
+3. La tienda queda en `https://TU-USUARIO.github.io/NOMBRE-REPO/` .
+4. En el panel, pestaña **Datos de la tienda**, escribe esa dirección en "Dirección web" y descarga la tienda; reemplaza `index.html` en GitHub.
 
-## Actualizar productos
-Panel → cargar `index.html` → editar → *Descargar tienda actualizada* → subir como `index.html`.
-Antes de cambiar algo, parte siempre del `index.html` más reciente para no perder tus ediciones.
+## Panel de administración
+Abre `panel-local/admin-zavi.html` con doble clic en tu computadora. Allí puedes:
+- Agregar, duplicar, ordenar y eliminar prendas; cambiar fotos, precios, tallas y etiquetas.
+- **Agregar varias con fotos** (una prenda por foto) y **importar una planilla Excel/CSV** (⬇ Planilla Excel descarga el ejemplo).
+- **Seleccionar varias prendas** y aplicar en lote: descuento %, quitar oferta, agotado/disponible, ocultar/mostrar, eliminar.
+- Filtrar por categoría, estado, *sin foto*, *sin precio* o *en oferta*.
+- En cada prenda: hasta **6 fotos extra** (galería de la ficha, con zoom y pantalla completa) y una **descripción** opcional.
+- Pestaña **Ofertas de la semana**: prendas que aparecen solo en esa sección.
+- Pestaña **Imágenes de portada**: cambia la foto, el título, el texto y el botón de los 3 banners; las fotos de las categorías (Mujer, Hombre, Zapatillas, Accesorios, Por mayor) y la foto de “Nosotros”. Solo se guarda lo que cambias.
+- **Datos de la tienda**: WhatsApp, Yape y QR, envío (S/ 5), recojo, condiciones de cambio, fecha de fin de ofertas, enlaces.
+
+Flujo: abre el panel → carga tu `index.html` más reciente → edita → *Descargar tienda actualizada* → renómbrala a `index.html` y reemplázala en GitHub. Parte siempre del `index.html` más reciente para no perder cambios.
+
+## Seguridad
+El panel no tiene contraseña porque se usa solo en tu computadora: no lo subas a GitHub (la carpeta `panel-local/` está en `.gitignore` por si usas git). Solo modifica una copia local; lo que protege tu tienda publicada es tu cuenta de GitHub (activa la verificación en dos pasos).
 
 ## Políticas actuales
 Envío a domicilio S/ 5 (recojo en tienda sin costo, configurable). Se aceptan cambios; no hay devoluciones.
 
-## Nota de seguridad
-El panel no tiene contraseña y no guarda nada en internet: solo modifica una copia local. Aun así, `panel-local/` quedará visible si el repositorio es público; no contiene claves ni datos privados.
+## Catálogo y ficha de producto
+- Los filtros son coherentes: solo muestran tallas, tipos y precios que existen con tu selección (con su cantidad); si un filtro deja de aplicar, se quita solo y se avisa.
+- La ficha de cada prenda muestra galería con miniaturas, precio con descuento, talla, cantidad, “Agregar al carro”, favoritos, detalles e información adicional.
 
+## Accesibilidad y honestidad
+- Enlace para saltar al contenido, foco visible, navegación por teclado, ventana de pago con foco controlado y respeto por "reducir movimiento".
+- Sin opiniones ni cifras inventadas: la sección de opiniones invita a compartir experiencias reales.
+- La cuenta regresiva de ofertas solo aparece si configuras una fecha futura.
+- La tienda es estática: el pedido se prepara como mensaje de WhatsApp y el flujo de Yape muestra los datos de pago. **No procesa ni verifica pagos**, ni guarda pedidos ni controla stock.
 
-## Mejoras de experiencia ZAVI
-- Diseño visual refinado con mejor jerarquía, tarjetas de producto, estados de foco y navegación móvil.
-- Catálogo más cómodo de explorar en pantallas pequeñas; menú de categorías desplazable.
-- Enlace para saltar directamente al contenido y soporte reforzado para navegación por teclado y movimiento reducido.
-- La sección de opiniones ya no muestra reseñas ni cifras de clientes ficticias: invita a compartir experiencias reales.
-- Se mantiene la compra por WhatsApp, el carrito, favoritos, selección de tallas y pago informativo con Yape.
-- `fuentes/build_all.py` ahora usa rutas relativas y puede reconstruir `index.html` desde `fuentes/zavi-src.html` y `fuentes/datos.json`, recuperando los recursos gráficos embebidos del `index.html` actual.
+## Pendiente (depende del dueño)
+Fotos, precios y tallas reales (el catálogo actual es de demostración), publicar y poner la dirección web en el panel, enlace del Libro de reclamaciones, condiciones de cambio y política de privacidad.
 
-## Importante sobre pagos y pedidos
-La tienda es estática: el botón de pedido prepara el mensaje para WhatsApp y el flujo de Yape muestra los datos de pago; no procesa tarjetas ni confirma pagos automáticamente, y no guarda pedidos en una base de datos. Para automatizar inventario, pagos y pedidos se necesitaría integrar un backend o una plataforma de comercio electrónico.
+## Reconstruir desde las fuentes
+`python3 fuentes/build_all.py` (conserva tus productos actuales) o `--reset-datos` para volver a los de ejemplo.
 
+## Actualizar el diseño SIN perder tus productos, precios y fotos
 
-## Revisión técnica adicional
-- La cuenta regresiva de ofertas solo aparece cuando se configura una fecha de vencimiento futura; no se inventa un cierre semanal.
-- El botón del carrito describe el flujo como instrucciones de pago con Yape. La tienda informa expresamente que no procesa ni verifica pagos automáticamente.
-- El diálogo de pago mueve el foco al abrirse, limita la navegación con Tab dentro de la ventana y devuelve el foco al control que lo abrió al cerrarse.
-- Las imágenes del catálogo usan decodificación asíncrona además de carga diferida.
-- El panel-local se conserva sin modificaciones.
+Tus datos (productos, precios, fotos, ajustes) viven **dentro** de tu `index.html` publicado. Por eso **nunca reemplaces tu `index.html` con el del zip de una actualización**: traería los datos de ejemplo y borraría lo tuyo.
 
-## Límites que siguen pendientes
-- El catálogo incluido contiene artículos e imágenes de demostración: reemplázalos por inventario, fotos, precios y tallas reales antes de vender.
-- Los pedidos se coordinan por WhatsApp; no hay persistencia centralizada, control de stock compartido ni conciliación automática de pagos.
-- Para pagos en línea e inventario multiusuario se requiere un backend o una plataforma externa con credenciales privadas almacenadas del lado del servidor.
+Haz esto:
+
+1. Abre `panel-local/admin-zavi.html` y elige **tu** `index.html` actual (el que está publicado en GitHub, con tus datos).
+2. Toca **⟳ Actualizar diseño** y elige el `index.html` **nuevo** que viene en la actualización.
+3. Toca **Descargar tienda actualizada**, renómbralo a `index.html` y súbelo a GitHub.
+
+El diseño es el nuevo; tus productos, fotos, precios y ajustes se quedan como estaban. Guarda una copia de tu `index.html` antes de cada actualización como respaldo.
