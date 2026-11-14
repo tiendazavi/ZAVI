@@ -1061,6 +1061,38 @@
     .fav-fila strong { display: block; font-size: 0.92rem; line-height: 1.3; }
     .fav-fila span { font-size: 0.85rem; color: var(--gris-texto); }
     .fav-fila div:last-child { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
+
+    /* =========================================================
+       MEJORAS: sugerencias, relacionados, compartir, envío gratis
+       ========================================================= */
+    .sugerencias { position: absolute; top: calc(100% + 8px); left: 0; right: 0; background: var(--blanco); border: 1px solid var(--gris-borde); border-radius: 14px; box-shadow: 0 18px 44px rgba(0,0,0,0.18); z-index: 160; overflow: hidden auto; max-height: min(72vh, 460px); }
+    .sugerencias[hidden] { display: none; }
+    .sug { display: grid; grid-template-columns: 44px minmax(0, 1fr) auto; gap: 12px; align-items: center; padding: 8px 14px; cursor: pointer; }
+    .sug[aria-selected="true"], .sug:hover { background: var(--gris-claro); }
+    .sug img { width: 44px; height: 54px; object-fit: cover; border-radius: 6px; background: var(--gris-claro); }
+    .sug b { display: block; font-size: 0.9rem; font-weight: 600; line-height: 1.25; }
+    .sug small { color: var(--gris-texto); font-size: 0.75rem; }
+    .sug-precio { font-weight: 700; font-size: 0.9rem; white-space: nowrap; }
+    .sug-todo { padding: 13px 14px; font-weight: 600; font-size: 0.88rem; border-top: 1px solid var(--gris-borde); cursor: pointer; }
+    .sug-todo[aria-selected="true"], .sug-todo:hover { background: var(--gris-claro); }
+    .sug-vacio { padding: 16px 14px; font-size: 0.9rem; color: var(--gris-texto); line-height: 1.5; }
+    .sug mark { background: #ffe9a8; color: inherit; border-radius: 2px; padding: 0 1px; }
+
+    .vistos { background: var(--gris-claro); padding: 56px 0; }
+    .pdp-rel { margin-top: 34px; padding-top: 26px; border-top: 1px solid var(--gris-borde); }
+    .pdp-rel h3 { font-family: var(--serif); font-size: 1.35rem; margin-bottom: 14px; }
+    .pdp-rel .pista { padding-bottom: 8px; }
+    .pdp-acciones { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-top: 12px; }
+    .pdp-acciones .pdp-wsp { margin-top: 0; }
+    .pdp-compartir { display: inline-flex; align-items: center; gap: 8px; padding: 12px 18px; border: 1.5px solid var(--gris-borde); border-radius: 6px; background: var(--blanco); font: inherit; font-size: 0.82rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; cursor: pointer; transition: var(--transicion); }
+    .pdp-compartir:hover { border-color: var(--negro); }
+    .pdp-compartir svg { width: 17px; height: 17px; }
+
+    .envio-prog { margin: 0 0 14px; font-size: 0.86rem; }
+    .envio-prog p { margin-bottom: 7px; line-height: 1.4; }
+    .envio-barra { height: 8px; background: var(--gris-borde); border-radius: 999px; overflow: hidden; }
+    .envio-barra i { display: block; height: 100%; width: 0; background: var(--rojo); border-radius: 999px; transition: width 0.45s ease; }
+    .envio-prog.ok .envio-barra i { background: #16a34a; }
   </style>
 </head>
 
@@ -1104,10 +1136,11 @@
           <option value="accesorios">Accesorios</option>
         </select>
         <label class="solo-lectores" for="buscadorTexto">Buscar prendas</label>
-        <input type="search" id="buscadorTexto" placeholder="Busca polos, jeans, casacas..." autocomplete="off" />
+        <input type="search" id="buscadorTexto" placeholder="Busca polos, jeans, casacas..." autocomplete="off" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="sugerencias" />
         <button type="submit" aria-label="Buscar">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
         </button>
+        <div class="sugerencias" id="sugerencias" role="listbox" aria-label="Sugerencias de búsqueda" hidden></div>
       </form>
 
       <!-- Cuenta, favoritos y carrito -->
@@ -1384,6 +1417,17 @@
       </div>
     </section>
 
+    <!-- ================= VISTOS RECIENTEMENTE ================= -->
+    <section class="vistos" id="vistos" aria-label="Vistos recientemente" hidden>
+      <div class="contenedor">
+        <div class="cabecera-seccion">
+          <div><span class="etiqueta">Para ti</span><h2 class="titulo-seccion" style="margin:0">Vistos recientemente</h2></div>
+          <button type="button" class="btn btn-secundario chico" id="limpiarVistos">Borrar historial</button>
+        </div>
+        <div class="pista" id="pistaVistos"></div>
+      </div>
+    </section>
+
     <!-- ================= 3. SOBRE NOSOTROS ================= -->
     <section class="nosotros" id="nosotros">
       <div class="contenedor nosotros-grid">
@@ -1611,6 +1655,7 @@
         <label class="opcion"><input type="radio" name="entrega" value="envio" checked /><span>Envío a domicilio</span><b data-envio></b></label>
         <label class="opcion"><input type="radio" name="entrega" value="recojo" /><span>Recojo en tienda<small>Galería Megacentro, tienda B7</small></span><b>Gratis</b></label>
       </div>
+      <div class="envio-prog" id="envioProg" hidden><p id="envioProgTxt"></p><div class="envio-barra"><i id="envioProgBarra"></i></div></div>
       <div class="resumen-linea"><span>Subtotal</span><span id="carritoSubtotal">S/ 0.00</span></div>
       <div class="resumen-linea"><span>Envío</span><span id="carritoEnvio">—</span></div>
       <div class="subtotal"><span>Total</span><span id="carritoTotal">S/ 0.00</span></div>
@@ -1740,6 +1785,7 @@
     const QR_YAPE = CFG.qr || '';                            // Imagen del QR de Yape
     const HORARIO = CFG.horario || 'Lun – Sáb: 9:00 a 20:00 · Dom: 10:00 a 15:00';
     const ENVIO = (typeof CFG.envioCosto === 'number' && CFG.envioCosto >= 0) ? CFG.envioCosto : 5;   // costo del envío a domicilio (S/)
+    const ENVIO_GRATIS = Number(CFG.envioGratisDesde) > 0 ? Math.round(Number(CFG.envioGratisDesde) * 100) / 100 : 0;   // envío gratis desde este monto (0 = no se usa)
     const RECOJO = CFG.recojoTienda !== false;                 // ¿se ofrece recojo en tienda sin costo?
     const CONDICIONES = (CFG.condicionesCambio || '').trim();   // condiciones de cambio (opcional)
     const MONEDA = 'S/ ';
@@ -1764,6 +1810,7 @@
     const $$ = (s, r = document) => [...r.querySelectorAll(s)];
     const dinero = n => MONEDA + n.toFixed(2);
     const descuento = p => p.antes ? Math.round((1 - p.precio / p.antes) * 100) : 0;
+    const norm = t => String(t == null ? '' : t).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();    // búsqueda sin tildes ni mayúsculas
     const esc = t => String(t).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
     const etiquetaCat = { mujer: 'Mujer', hombre: 'Hombre', zapatillas: 'Zapatillas', accesorios: 'Accesorios' };
 
@@ -1901,8 +1948,8 @@
         }
         if (ignora !== 'tipo' && filtro.tipo && p.tipo !== filtro.tipo) return false;
         if (filtro.texto) {
-          const t = filtro.texto.toLowerCase();
-          if (!(p.nombre.toLowerCase().includes(t) || p.tipo.includes(t) || p.cat.includes(t) || p.marca.toLowerCase().includes(t))) return false;
+          const t = norm(filtro.texto);
+          if (!(norm(p.nombre).includes(t) || norm(p.tipo).includes(t) || norm(p.cat).includes(t) || norm(p.marca).includes(t))) return false;
         }
         if (ignora !== 'precio') {
           if (filtro.min !== null && p.precio < filtro.min) return false;
@@ -2070,6 +2117,31 @@
 
     // Ficha de producto: galería con miniaturas, precio, talla, cantidad y detalles (estilo tienda por departamentos)
     let vistaProd = null, vistaIdx = 0, vistaQty = 1;
+    let vistos = leer('zavi_vistos', []); if (!Array.isArray(vistos)) vistos = [];
+    // Prendas parecidas: misma categoría, primero el mismo tipo y la misma marca
+    function relacionados(p) {
+      return PRODUCTOS.filter(x => x.id !== p.id && x.cat === p.cat && !x.agotado && !x.soloOferta)
+        .map(x => ({ x, pt: (x.tipo === p.tipo ? 2 : 0) + (p.marca && x.marca === p.marca ? 1 : 0) }))
+        .sort((a, b) => b.pt - a.pt || a.x.id - b.x.id).slice(0, 6).map(o => o.x);
+    }
+    function renderVistos() {
+      const lista = vistos.map(id => PRODUCTOS.find(p => p.id === id)).filter(Boolean);
+      $('#vistos').hidden = !lista.length;
+      $('#pistaVistos').innerHTML = lista.map(tarjetaProducto).join('');
+    }
+    $('#limpiarVistos').addEventListener('click', () => { vistos = []; guardar('zavi_vistos', vistos); renderVistos(); });
+    // Compartir una prenda (enlace directo)
+    function enlaceProducto(id) {
+      const base = /^https?:\/\//.test(CFG.sitioUrl || '') ? CFG.sitioUrl.replace(/\/+$/, '') + '/' : location.href.split('#')[0];
+      return base + '#producto-' + id;
+    }
+    async function compartirProducto(id) {
+      const p = PRODUCTOS.find(x => x.id === id); if (!p) return;
+      const url = enlaceProducto(id), datos = { title: p.nombre + ' · ZAVI', text: `Mira esta prenda en ZAVI: ${p.nombre} (${dinero(p.precio)})`, url };
+      if (navigator.share) { try { await navigator.share(datos); return; } catch (e) { if (e && e.name === 'AbortError') return; } }
+      try { await navigator.clipboard.writeText(url); aviso('Enlace copiado ✓ Pégalo en WhatsApp o donde quieras'); }
+      catch (e) { aviso('Copia este enlace: ' + url); }
+    }
     const fotosDe = p => [p.img, ...(p.imgs || [])].filter(Boolean);
     function pintarGaleria() {
       const fotos = fotosDe(vistaProd), img = $('#pdpImg');
@@ -2096,7 +2168,7 @@
     window.addEventListener('resize', ajustarMiniaturas);
     function abrirVista(id) {
       const m = $('#modalVista');
-      if (id === false) { m.classList.remove('visible'); m.setAttribute('aria-hidden', 'true'); document.body.style.overflow = ''; return; }
+      if (id === false) { m.classList.remove('visible'); m.setAttribute('aria-hidden', 'true'); document.body.style.overflow = ''; if (/^#producto-/.test(location.hash)) { try { history.replaceState(null, '', location.pathname + location.search); } catch (e) {} } return; }
       const p = PRODUCTOS.find(x => x.id === id); if (!p) return;
       vistaProd = p; vistaIdx = 0; vistaQty = 1;
       const d = descuento(p), fotos = fotosDe(p), esFav = favoritos.includes(p.id);
@@ -2141,14 +2213,18 @@
               <li><span>Código:</span> ZV-${String(p.id).padStart(4, '0')}</li>
               <li><span>Origen:</span> Ropa importada</li>
             </ul>
-            <a class="pdp-wsp" target="_blank" rel="noopener" href="https://wa.me/${WHATSAPP}?text=${encodeURIComponent(msg)}">Consultar por WhatsApp</a>
-            <div class="pdp-caja"><strong>Envío a domicilio ${ENVIO > 0 ? dinero(ENVIO) : 'sin costo'}${RECOJO ? ' · Recojo gratis en tienda' : ''}</strong><span>Paga con Yape y coordinamos la entrega por WhatsApp.</span></div>
+            <div class="pdp-acciones"><a class="pdp-wsp" target="_blank" rel="noopener" href="https://wa.me/${WHATSAPP}?text=${encodeURIComponent(msg)}">Consultar por WhatsApp</a>
+              <button type="button" class="pdp-compartir" data-compartir="${p.id}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 10.5l6.8-4M8.6 13.5l6.8 4"/></svg>Compartir</button></div>
+            <div class="pdp-caja"><strong>Envío a domicilio ${ENVIO > 0 ? dinero(ENVIO) : 'sin costo'}${ENVIO > 0 && ENVIO_GRATIS ? ' · gratis desde ' + dinero(ENVIO_GRATIS) : ''}${RECOJO ? ' · Recojo gratis en tienda' : ''}</strong><span>Paga con Yape y coordinamos la entrega por WhatsApp.</span></div>
           </div>
         </div>
         <details class="pdp-mas" open>
           <summary>Información adicional</summary>
           <div class="pdp-mas-cuerpo">${detalle}<ul><li>Envío a domicilio ${ENVIO > 0 ? dinero(ENVIO) : 'sin costo'}${RECOJO ? ' o recojo gratis en tienda (Galería Megacentro, tienda B7)' : ''}.</li><li>Aceptamos cambios de prenda; no hacemos devoluciones.</li>${CONDICIONES ? `<li>${esc(CONDICIONES)}</li>` : ''}<li>¿Dudas con la talla? Escríbenos antes de comprar y te asesoramos.</li></ul></div>
-        </details>`;
+        </details>
+        ${relacionados(p).length ? `<section class="pdp-rel" aria-label="También te puede gustar"><h3>También te puede gustar</h3><div class="pista">${relacionados(p).map(tarjetaProducto).join('')}</div></section>` : ''}`;
+      try { history.replaceState(null, '', location.pathname + location.search + '#producto-' + p.id); } catch (e) { /* sin historial */ }
+      vistos = [p.id, ...vistos.filter(x => x !== p.id)].slice(0, 10); guardar('zavi_vistos', vistos); renderVistos();
       m.classList.add('visible'); m.setAttribute('aria-hidden', 'false'); document.body.style.overflow = 'hidden';
       m.querySelector('.vista-caja').scrollTop = 0;
       requestAnimationFrame(ajustarMiniaturas);
@@ -2168,6 +2244,7 @@
       if (e.target.closest('[data-zoom]')) { abrirLightbox(); return; }
       if (q) { vistaQty = Math.min(10, Math.max(1, vistaQty + +q.dataset.vqty)); $('#vistaQty').textContent = vistaQty; return; }
       if (e.target.closest('[data-cerrar-vista]')) abrirVista(false);
+      const sh = e.target.closest('[data-compartir]'); if (sh) compartirProducto(+sh.dataset.compartir);
     });
     $('#cerrarVista').addEventListener('click', () => abrirVista(false));
     $('#modalVista').addEventListener('click', (e) => { if (e.target.id === 'modalVista') abrirVista(false); });
@@ -2231,7 +2308,7 @@
       favoritos = favoritos.includes(id) ? favoritos.filter(f => f !== id) : [...favoritos, id];
       guardar('zavi_favoritos', favoritos);
       actualizarContadores(); if (typeof pintarCuentaMenu === 'function') pintarCuentaMenu();
-      renderCatalogo(); renderOfertas();
+      renderCatalogo(); renderOfertas(); renderVistos();
       $$('.pdp-fav').forEach(b => { const on = favoritos.includes(+b.dataset.fav); b.classList.toggle('activo', on); b.setAttribute('aria-pressed', String(on)); });
     }
 
@@ -2267,9 +2344,9 @@
     function subtotalCarrito() {
       return carrito.reduce((s, i) => s + PRODUCTOS.find(p => p.id === i.id).precio * i.qty, 0);
     }
-    function costoEnvio() { return (carrito.length && entrega === 'envio') ? ENVIO : 0; }
+    function costoEnvio() { return (carrito.length && entrega === 'envio') ? (ENVIO_GRATIS && subtotalCarrito() >= ENVIO_GRATIS ? 0 : ENVIO) : 0; }
     function totalCarrito() { return subtotalCarrito() + costoEnvio(); }
-    function textoEntrega() { return entrega === 'envio' ? `Envío a domicilio (${ENVIO > 0 ? dinero(ENVIO) : 'sin costo'})` : 'Recojo en tienda (Galería Megacentro, Huancayo)'; }
+    function textoEntrega() { return entrega === 'envio' ? `Envío a domicilio (${costoEnvio() > 0 ? dinero(costoEnvio()) : (ENVIO > 0 ? 'gratis' : 'sin costo')})` : 'Recojo en tienda (Galería Megacentro, Huancayo)'; }
     // Bloque de totales que se incluye en los mensajes de WhatsApp
     function pieTotales() { return `Subtotal: ${dinero(subtotalCarrito())}\nEntrega: ${textoEntrega()}\nTotal a pagar: ${dinero(totalCarrito())}`; }
 
@@ -2303,6 +2380,13 @@
             </div>`;
         }).join('');
       }
+      const prog = $('#envioProg');
+      if (ENVIO_GRATIS && ENVIO > 0 && carrito.length && entrega === 'envio') {
+        const falta = ENVIO_GRATIS - subtotalCarrito(), pct = Math.min(100, Math.round(subtotalCarrito() / ENVIO_GRATIS * 100));
+        prog.hidden = false; prog.classList.toggle('ok', falta <= 0);
+        $('#envioProgTxt').innerHTML = falta > 0 ? `Te faltan <strong>${dinero(falta)}</strong> para tener <strong>envío gratis</strong> 🚚` : '🎉 <strong>¡Tu envío es gratis!</strong>';
+        $('#envioProgBarra').style.width = pct + '%';
+      } else prog.hidden = true;
       $('#carritoSubtotal').textContent = dinero(subtotalCarrito());
       $('#carritoEnvio').textContent = !carrito.length ? '—' : (costoEnvio() > 0 ? dinero(costoEnvio()) : 'Gratis');
       $('#carritoTotal').textContent = dinero(totalCarrito());
@@ -2498,7 +2582,7 @@
         focoAnteriorPago = focoActual && focoActual.closest('#panelCarrito') ? $('#btnCarrito') : focoActual;
         abrirCarrito(false);
         $('#pagoMonto').textContent = dinero(totalCarrito());
-        $('#pagoDetalle').textContent = entrega === 'envio' ? (ENVIO > 0 ? `Incluye envío a domicilio de ${dinero(ENVIO)}` : 'Envío a domicilio sin costo') : 'Recojo en tienda · sin costo de envío';
+        $('#pagoDetalle').textContent = entrega === 'envio' ? (costoEnvio() > 0 ? `Incluye envío a domicilio de ${dinero(costoEnvio())}` : 'Envío a domicilio sin costo') : 'Recojo en tienda · sin costo de envío';
         $('#campoDireccion').hidden = entrega === 'recojo';
         $('#pagoNumero').textContent = YAPE_FORMATO;
         if (cuenta) { if (!$('#pagoNombre').value) $('#pagoNombre').value = cuenta.nombre || ''; if (!$('#pagoDireccion').value && cuenta.direccion) $('#pagoDireccion').value = cuenta.direccion; }
@@ -2638,7 +2722,7 @@
         saludo: () => '¡Hola! 👋 Soy el asistente de ZAVI. Te ayudo con prendas, precios, tallas, envíos y pagos con Yape. ¿Qué estás buscando?',
         gracias: () => '¡Con gusto! 😊 Cuando quieras, agrega tus prendas al carrito y paga con Yape en un momento.',
         pagos: () => `Puedes pagar con <strong>Yape</strong>. Agrega tus prendas al carrito, toca <em>“Pagar con Yape”</em> y verás el QR y el número <strong>${YAPE_FORMATO}</strong>. Después nos envías la captura por WhatsApp y confirmamos tu pedido. El monto ya incluye el envío si eliges envío a domicilio.<br>Si prefieres otro medio de pago, consúltalo con un asesor.` + botonWsp('Hola ZAVI, quiero consultar por otros medios de pago.', 'Consultar otro medio'),
-        envios: () => (ENVIO > 0 ? `El envío a domicilio cuesta <strong>${dinero(ENVIO)}</strong>.` : 'El envío a domicilio no tiene costo.')
+        envios: () => (ENVIO > 0 ? `El envío a domicilio cuesta <strong>${dinero(ENVIO)}</strong>` + (ENVIO_GRATIS ? ` y es <strong>gratis desde ${dinero(ENVIO_GRATIS)}</strong> en compras.` : '.') : 'El envío a domicilio no tiene costo.')
           + ' Coordinamos la entrega contigo por WhatsApp.'
           + (RECOJO ? ' También puedes <strong>recoger en tienda sin costo</strong>: Galería Megacentro, Real 1040, 2.º piso, tienda B7, Huancayo.' : '')
           + botonWsp('Hola ZAVI, quiero coordinar la entrega de mi pedido.', 'Coordinar entrega'),
@@ -2720,7 +2804,7 @@
 
     /* ---------- DATOS DE CONTACTO DESDE EL PANEL ---------- */
     (function () {
-      $$('[data-envio]').forEach(el => { el.textContent = ENVIO > 0 ? dinero(ENVIO) : 'sin costo'; });
+      $$('[data-envio]').forEach(el => { el.textContent = (ENVIO > 0 ? dinero(ENVIO) : 'sin costo') + (ENVIO > 0 && ENVIO_GRATIS && el.closest('.beneficios-franja, .politicas-grid, #polEnvio, li') && !el.closest('#entregaOpc') ? ' · gratis desde ' + dinero(ENVIO_GRATIS) : ''); });
       $('#polRecojo').hidden = !RECOJO;
       if (CONDICIONES) { const li = $('#polCondiciones'); li.textContent = CONDICIONES; li.hidden = false; }
       const rec = (CFG.reclamosUrl || '').trim();
@@ -2884,8 +2968,57 @@
     });
     pintarCuentaMenu();
 
+
+    /* ---------- Buscador con sugerencias ---------- */
+    (function sugerencias() {
+      const inp = $('#buscadorTexto'), caja = $('#sugerencias'); let idx = -1, items = [];
+      const cerrar = () => { caja.hidden = true; inp.setAttribute('aria-expanded', 'false'); inp.removeAttribute('aria-activedescendant'); idx = -1; };
+      const resaltar = (txt, t) => { const n = norm(txt), i = n.indexOf(t); return (i >= 0 && n.length === txt.length) ? esc(txt.slice(0, i)) + '<mark>' + esc(txt.slice(i, i + t.length)) + '</mark>' + esc(txt.slice(i + t.length)) : esc(txt); };
+      function buscar(texto) {
+        const t = norm(texto.trim()); if (t.length < 2) return [];
+        return PRODUCTOS.map(p => ({ p, s: norm(p.nombre).startsWith(t) ? 4 : norm(p.nombre).includes(t) ? 3 : norm(p.marca).includes(t) ? 2 : (norm(p.tipo).includes(t) || norm(p.cat).includes(t)) ? 1 : 0 }))
+          .filter(o => o.s > 0).sort((a, b) => b.s - a.s || a.p.id - b.p.id).map(o => o.p);
+      }
+      function pintar() {
+        const texto = inp.value.trim(), t = norm(texto); if (t.length < 2) { cerrar(); return; }
+        const res = buscar(texto); items = res.slice(0, 6);
+        caja.innerHTML = res.length
+          ? items.map(p => `<div class="sug" role="option" id="sug-${p.id}" data-sug="${p.id}" aria-selected="false"><img src="${esc(p.img)}" alt="" loading="lazy" onerror="this.style.visibility='hidden'" /><div><b>${resaltar(p.nombre, t)}</b><small>${p.marca ? esc(p.marca) + ' · ' : ''}${etiquetaCat[p.cat]}</small></div><span class="sug-precio">${dinero(p.precio)}</span></div>`).join('')
+            + `<div class="sug-todo" role="option" id="sug-todo" data-sug="todo" aria-selected="false">Ver ${res.length === 1 ? 'el resultado' : 'los ' + res.length + ' resultados'} de “${esc(texto)}” →</div>`
+          : `<div class="sug-vacio">No encontramos “${esc(texto)}”. Prueba con otra palabra (polo, jean, casaca…) o escríbenos por WhatsApp y te ayudamos.</div>`;
+        caja.hidden = false; inp.setAttribute('aria-expanded', 'true'); idx = -1;
+      }
+      const opciones = () => $$('[data-sug]', caja);
+      function marcarIdx(n) {
+        const o = opciones(); if (!o.length) return; idx = (n + o.length) % o.length;
+        o.forEach((el, i) => el.setAttribute('aria-selected', String(i === idx)));
+        inp.setAttribute('aria-activedescendant', o[idx].id); o[idx].scrollIntoView({ block: 'nearest' });
+      }
+      function elegir(el) {
+        cerrar();
+        if (el.dataset.sug === 'todo') { $('#formBuscador').requestSubmit(); return; }
+        abrirVista(+el.dataset.sug);
+      }
+      inp.addEventListener('input', pintar);
+      inp.addEventListener('focus', () => { if (inp.value.trim().length >= 2) pintar(); });
+      inp.addEventListener('keydown', (e) => {
+        if (caja.hidden) return;
+        if (e.key === 'ArrowDown') { e.preventDefault(); marcarIdx(idx + 1); }
+        else if (e.key === 'ArrowUp') { e.preventDefault(); marcarIdx(idx - 1); }
+        else if (e.key === 'Enter' && idx >= 0) { e.preventDefault(); elegir(opciones()[idx]); }
+        else if (e.key === 'Escape') { cerrar(); }
+      });
+      caja.addEventListener('mousedown', (e) => e.preventDefault());            // el campo no pierde el foco al tocar una sugerencia
+      caja.addEventListener('click', (e) => { const el = e.target.closest('[data-sug]'); if (el) elegir(el); });
+      document.addEventListener('click', (e) => { if (!e.target.closest('#formBuscador')) cerrar(); });
+      $('#formBuscador').addEventListener('submit', cerrar);
+      $('#buscadorCat').addEventListener('change', cerrar);
+    })();
+
     /* ---------- INICIO ---------- */
-    renderCatalogo(); renderOfertas(); renderCarrito(); actualizarContadores();
+    renderCatalogo(); renderOfertas(); renderVistos(); renderCarrito(); actualizarContadores();
+    // Enlace directo a una prenda: tuweb.com/#producto-12
+    (function () { const m = /^#producto-(\d+)$/.exec(location.hash); if (m && PRODUCTOS.some(p => p.id === +m[1])) setTimeout(() => abrirVista(+m[1]), 250); })();
   
     /* ---------- Accesibilidad: imágenes rotas y menú móvil ---------- */
     (function () {
